@@ -1,0 +1,24 @@
+; ~/.config/cava/config
+; Audio visualizer. Colours come from themes/rice, which theme-sync.py
+; rewrites whenever the wallpaper changes (open cava windows update live).
+
+[general]
+framerate = 60
+autosens = 1
+bar_width = 2
+bar_spacing = 1
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+method = noncurses
+
+[color]
+; transparent background keeps the terminal's glass look
+background = default
+theme = 'rice'
+
+[smoothing]
+noise_reduction = 77

@@ -1,0 +1,17 @@
+# Never commit caches, backups or editor leftovers
+__pycache__/
+*.pyc
+*.tmp
+*.swp
+*~
+rice-backup/
+thumbs/
+
+# Keep wallpapers and screenshots out of the repo (they belong to their artists / are personal)
+Pictures/
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.avif

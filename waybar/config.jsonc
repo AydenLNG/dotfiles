@@ -1,0 +1,94 @@
+// ~/.config/waybar/config.jsonc
+// Slim floating glass bar. Colours come from colors.css (synced to the wallpaper).
+// Icons are Nerd Font glyphs written as \uXXXX escapes.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 6,
+
+    "modules-left": ["hyprland/workspaces", "hyprland/window"],
+    "modules-center": ["clock", "mpris"],
+    "modules-right": ["custom/weather", "pulseaudio", "network", "cpu", "memory", "tray", "custom/wallpaper", "custom/power"],
+
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "persistent-workspaces": { "*": 5 }
+    },
+
+    "hyprland/window": {
+        "max-length": 45,
+        "separate-outputs": true
+    },
+
+    "clock": {
+        "format": "  {:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+
+    // Song / video playing in any MPRIS app (Firefox, Spotify, mpv...).
+    // Hidden when nothing is playing. Click: play/pause, scroll: next/previous.
+    "mpris": {
+        "format": "{status_icon}  {dynamic}",
+        "format-paused": "{status_icon}  <i>{dynamic}</i>",
+        "dynamic-order": ["title", "artist"],
+        "dynamic-len": 40,
+        "status-icons": { "playing": "", "paused": "", "stopped": "" },
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+
+    // Weather for the place set in ~/.config/rice/weather.conf (never auto-detected).
+    "custom/weather": {
+        "exec": "$HOME/.config/rice/weather.sh",
+        "return-type": "json",
+        "interval": 1800
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "  muted",
+        "format-icons": { "default": ["", "", ""] },
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    },
+
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "  wired",
+        "format-disconnected": "  offline",
+        "tooltip-format": "{ifname}: {ipaddr}"
+    },
+
+    "cpu": {
+        "format": "  {usage}%",
+        "interval": 3
+    },
+
+    "memory": {
+        "format": "  {percentage}%",
+        "interval": 5
+    },
+
+    "tray": {
+        "spacing": 8
+    },
+
+    "custom/wallpaper": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "$HOME/.config/rice/wallpaper.sh pick",
+        "on-click-right": "$HOME/.config/rice/wallpaper.sh random"
+    },
+
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "$HOME/.config/rice/power-menu.sh"
+    }
+}

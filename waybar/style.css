@@ -1,0 +1,106 @@
+/* ~/.config/waybar/style.css
+   Glass bar. All colours come from colors.css, which theme-sync.py rewrites
+   whenever the wallpaper changes. Hyprland blurs what is behind the bar. */
+
+@import "colors.css";
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 16px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: alpha(@bg, 0.55);
+    color: @fg;
+    border-radius: 14px;
+    border: 1px solid alpha(@accent, 0.25);
+}
+
+tooltip {
+    background: alpha(@bg, 0.92);
+    border: 1px solid alpha(@accent, 0.4);
+    border-radius: 10px;
+}
+
+tooltip label {
+    color: @fg;
+}
+
+/* ---- workspaces ---- */
+
+#workspaces {
+    margin: 4px 0 4px 4px;
+}
+
+#workspaces button {
+    padding: 0 9px;
+    margin: 0 2px;
+    color: @muted;
+    background: transparent;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button.active {
+    color: @bg;
+    background: @accent;
+}
+
+#workspaces button.urgent {
+    color: @bg;
+    background: @urgent;
+}
+
+#workspaces button:hover {
+    color: @fg;
+    background: alpha(@fg, 0.1);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#window {
+    color: @muted;
+    padding: 0 10px;
+}
+
+/* ---- modules ---- */
+
+#clock,
+#mpris,
+#custom-weather,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#tray,
+#custom-wallpaper,
+#custom-power {
+    padding: 0 11px;
+    margin: 4px 0;
+    border-radius: 10px;
+    background: alpha(@surface, 0.65);
+}
+
+#clock            { color: @fg; font-weight: bold; }
+#mpris            { color: @accent2; margin-left: 6px; }
+#mpris.paused     { color: @muted; }
+#custom-weather   { color: @cyan; }
+#pulseaudio       { color: @blue; }
+#network          { color: @magenta; }
+#cpu              { color: @red; }
+#memory           { color: @yellow; }
+#custom-wallpaper { color: @accent2; }
+#custom-power     { color: @urgent; margin-right: 4px; }
+
+#pulseaudio.muted,
+#network.disconnected {
+    color: @muted;
+}
+
+#custom-wallpaper:hover,
+#custom-power:hover {
+    background: alpha(@accent, 0.25);
+}

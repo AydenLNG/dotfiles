@@ -1,0 +1,56 @@
+# Packages this rice uses. All from the official Arch repos (no AUR).
+# install.sh lists the missing ones and asks before installing anything.
+
+# ---- core rice ----
+hyprland
+foot                    # terminal
+waybar                  # bar
+fuzzel                  # app launcher, settings and power menus
+rofi                    # wallpaper picker with previews
+mako                    # notifications
+libnotify               # notify-send
+awww                    # wallpaper daemon with animated transitions
+imagemagick             # reads wallpaper colours, makes previews
+python                  # runs theme-sync.py
+wireplumber             # wpctl, for the bar's volume controls
+playerctl               # media module in the bar
+curl                    # weather module
+ttf-jetbrains-mono-nerd # font + icons
+noto-fonts              # normal UI font for apps
+adw-gtk-theme           # lets GTK 3 apps follow the wallpaper colours
+
+# ---- file manager ----
+thunar
+gvfs                    # USB drives, trash, network places in Thunar
+tumbler                 # image thumbnails in Thunar
+ffmpegthumbnailer       # video thumbnails in Thunar
+file-roller             # open and create zip / tar / 7z archives
+thunar-archive-plugin   # "Extract here" / "Compress" in Thunar's right-click menu
+
+# ---- settings apps (Super+I) ----
+pavucontrol             # sound
+network-manager-applet  # Wi-Fi icon + network settings
+blueman                 # Bluetooth
+nwg-look                # GTK theme, icons, cursor
+nwg-displays            # monitors and resolution
+
+# ---- everyday apps ----
+firefox
+imv                     # image viewer
+mpv                     # video player
+
+# ---- utilities ----
+grim                    # screenshots
+slurp                   # select an area for screenshots
+wl-clipboard            # copy and paste from scripts
+cliphist                # clipboard history
+hyprlock                # lock screen
+
+# ---- terminal widgets ----
+cava                    # audio visualizer, colours follow the wallpaper
+fastfetch               # system info with logo
+btop                    # live system monitor
+cmatrix                 # falling code effect
+
+# The login screen packages (greetd, greetd-regreet, cage) are installed
+# separately by rice/login-setup.sh, only if you choose to set it up.

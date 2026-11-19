@@ -1,0 +1,4 @@
+/* ~/.config/gtk-3.0/gtk.css
+   Loads colours that follow the wallpaper (colors.css is rewritten by
+   ~/.config/rice/theme-sync.py). Add your own GTK tweaks below the import. */
+@import "colors.css";
