@@ -63,7 +63,8 @@ fi
 FILES=(
     hypr/rice.lua hypr/colors.lua hypr/hyprlock.conf
     waybar/config.jsonc waybar/style.css waybar/colors.css
-    foot/foot.ini foot/colors.ini
+    kitty/kitty.conf kitty/colors.conf
+    fastfetch/config.jsonc
     fuzzel/fuzzel.ini
     mako/config
     cava/config
@@ -131,6 +132,8 @@ if [[ -f "$HL" ]]; then
     backup hypr/hyprland.lua
     # Comment out autostart lines that rice.lua now handles.
     sed -E -i 's/^([[:space:]]*)(hl\.exec_cmd\("(waybar|mako|awww-daemon|swaybg)[^"]*"\).*)$/\1-- [rice] \2/' "$HL"
+    # Default config's terminal (Mod+Q) -> kitty.
+    sed -E -i 's/^([[:space:]]*(local[[:space:]]+)?terminal[[:space:]]*=[[:space:]]*)"[^"]*"/\1"kitty"/' "$HL"
     # Default config's file manager (Mod+E) -> thunar.
     sed -E -i 's/^([[:space:]]*(local[[:space:]]+)?fileManager[[:space:]]*=[[:space:]]*)"[^"]*"/\1"thunar"/' "$HL"
     if ! grep -q 'require("rice")' "$HL"; then
@@ -143,7 +146,7 @@ else
 fi
 
 # ---------------------------------------------------------------- 6. wallpapers
-mkdir -p "$HOME/Pictures/Wallpapers"
+mkdir -p "$HOME/Pictures/Wallpapers" "$HOME/Pictures/Fetch"
 
 # ---------------------------------------------------------------- done
 echo
@@ -152,7 +155,7 @@ if (( backed_up )); then say "Your previous files are saved in: $BACKUP"; fi
 cat <<'EOF'
 
 Next steps:
-  1. Put some images in ~/Pictures/Wallpapers
+  1. Put some images in ~/Pictures/Wallpapers (and any for fastfetch in ~/Pictures/Fetch)
   2. Log out of Hyprland and back in
   3. Press Super+Shift+W to pick a wallpaper. Everything recolours to match.
   4. Super+I opens the settings menu (sound, Wi-Fi, appearance, keybinds...)

@@ -3,7 +3,7 @@
 
 # ---- core rice ----
 hyprland
-foot                    # terminal
+kitty                   # terminal (shows images, e.g. fastfetch logo)
 waybar                  # bar
 fuzzel                  # app launcher, settings and power menus
 rofi                    # wallpaper picker with previews

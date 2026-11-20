@@ -7,7 +7,7 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 
 ## Features
 
-- **Glass look:** translucent foot terminals and waybar, blurred by Hyprland
+- **Glass look:** translucent kitty terminals and waybar, blurred by Hyprland
 - **Wallpaper picker with previews:** thumbnail grid of `~/Pictures/Wallpapers` (rofi), animated transitions via awww
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
 - **Settings menu:** one menu for sound, Wi-Fi, Bluetooth, display, appearance, weather, lock and login screen, keybinds and system updates
@@ -37,7 +37,7 @@ settings menu under Keybinds.
 
 | Group | Apps |
 |---|---|
-| Core | hyprland, foot, waybar, fuzzel, rofi, mako, awww, imagemagick, python, playerctl, curl, fonts, adw-gtk-theme |
+| Core | hyprland, kitty, waybar, fuzzel, rofi, mako, awww, imagemagick, python, playerctl, curl, fonts, adw-gtk-theme |
 | File manager | thunar, gvfs, tumbler, ffmpegthumbnailer, file-roller, thunar-archive-plugin |
 | Settings | pavucontrol, network-manager-applet, blueman, nwg-look, nwg-displays |
 | Everyday | firefox, imv, mpv |
@@ -65,7 +65,7 @@ Then add images to `~/Pictures/Wallpapers`, log out and back in, and press `Mod 
 
 | App | How |
 |---|---|
-| foot, waybar, fuzzel, mako, rofi picker, cava | colour files rewritten and reloaded |
+| kitty, waybar, fuzzel, mako, rofi picker, cava | colour files rewritten and reloaded |
 | Window borders | `hypr/colors.lua`, then `hyprctl reload` |
 | Thunar, Sound, Bluetooth, Network, nwg apps, File Roller | GTK named colours in `gtk-3.0/colors.css` and `gtk-4.0/colors.css` (needs the adw-gtk3-dark theme) |
 | Lock screen | `hypr/hyprlock.conf` uses the wallpaper, blurred |
@@ -82,7 +82,8 @@ hypr/rice.lua           autostart, glass blur, borders, animations, keybinds, fl
 hypr/colors.lua         border colours            (generated)
 hypr/hyprlock.conf      lock screen               (generated)
 waybar/                 bar modules, style, colours
-foot/                   terminal font, padding, colours
+kitty/                  terminal font, padding, colours
+fastfetch/              fastfetch shows a random picture from ~/Pictures/Fetch
 fuzzel/fuzzel.ini       launcher                  (generated)
 mako/config             notifications             (generated)
 cava/config             audio visualizer
@@ -112,7 +113,7 @@ for good, edit the matching template in `rice/theme-sync.py`.
 | Gaps and corner rounding | `gaps_in`, `gaps_out`, `rounding` in `hypr/rice.lua` |
 | Transition styles and speed | `TRANSITIONS`, `DURATION` in `rice/wallpaper.sh` |
 | Weather location or units | `LOCATION` / `UNITS` in `~/.config/rice/weather.conf` |
-| Font sizes | `size=` in `foot/foot.ini`, `font-size` in `waybar/style.css`, `{FONT}` lines in `rice/theme-sync.py` |
+| Font sizes | `font_size` in `kitty/kitty.conf`, `font-size` in `waybar/style.css`, `{FONT}` lines in `rice/theme-sync.py` |
 | Back to the default palette | `~/.config/rice/theme-sync.py --default` |
 
 ## Login screen (optional)

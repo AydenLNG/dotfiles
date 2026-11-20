@@ -5,8 +5,8 @@ if pgrep -x fuzzel >/dev/null; then pkill -x fuzzel; exit 0; fi
 
 RICE="$HOME/.config/rice"
 
-# Run a terminal tool in foot and keep the window open until Enter is pressed.
-in_terminal() { foot -e bash -c "$1; echo; read -rp 'Press Enter to close'"; }
+# Run a terminal tool in kitty and keep the window open until Enter is pressed.
+in_terminal() { kitty bash -c "$1; echo; read -rp 'Press Enter to close'"; }
 
 missing() { notify-send "Settings" "$1 is not installed. Run the rice installer again."; }
 open_app() { if command -v "$1" >/dev/null; then setsid -f "$@" >/dev/null 2>&1; else missing "$1"; fi; }
@@ -40,7 +40,7 @@ case "$choice" in
         open_app nwg-displays ;;
     *Appearance*)       open_app nwg-look ;;
     *"Weather location")
-        foot -e nano "$RICE/weather.conf"
+        kitty nano "$RICE/weather.conf"
         pkill -x waybar; setsid -f waybar >/dev/null 2>&1 ;;
     *"Lock screen")     open_app hyprlock ;;
     *"Login screen")    in_terminal "$RICE/login-setup.sh" ;;

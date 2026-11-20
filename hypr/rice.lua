@@ -74,7 +74,7 @@ hl.animation({ leaf = "fade",       enabled = true, speed = 4, bezier = "default
 hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slidefade" })
 
 ---- BLUR BEHIND THE BAR, LAUNCHER AND NOTIFICATIONS ----
--- Terminals get their glass from foot's own transparency (foot/colors.ini),
+-- Terminals get their glass from kitty's own transparency (kitty/colors.conf),
 -- which keeps text sharp while the background is blurred.
 
 hl.layer_rule({ match = { namespace = "waybar" },        blur = true, ignore_alpha = 0.2 })
