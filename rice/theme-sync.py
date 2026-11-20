@@ -36,7 +36,7 @@ import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------- settings
-TERMINAL_ALPHA = 0.78   # kitty background opacity (0 = invisible, 1 = solid)
+TERMINAL_ALPHA = 0.35   # kitty background opacity (0 = invisible, 1 = solid)
 PANEL_ALPHA = "d9"      # fuzzel / mako background opacity, hex 00-ff
 FONT = "JetBrainsMono Nerd Font"
 

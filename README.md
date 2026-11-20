@@ -27,6 +27,7 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 | `Mod + Escape` | Power menu |
 | `Print` | Screenshot of an area (saved to `~/Pictures/Screenshots` and copied) |
 | `Shift + Print` | Screenshot of the whole screen |
+| `Mod + Shift + A` / `Mod + Shift + F` | Same screenshots, for keyboards without a Print key |
 
 `Mod` is Super by default. On a keyboard without a Windows key, set `local mod = "ALT"` at the
 top of `hypr/rice.lua`. `Mod + W` is intentionally left free. Your own keybinds (terminal,
@@ -82,7 +83,7 @@ hypr/rice.lua           autostart, glass blur, borders, animations, keybinds, fl
 hypr/colors.lua         border colours            (generated)
 hypr/hyprlock.conf      lock screen               (generated)
 waybar/                 bar modules, style, colours
-kitty/                  terminal font, padding, colours
+kitty/                  terminal font, padding, colours; auto_font.py scales text with window width
 fastfetch/              fastfetch shows a random picture from ~/Pictures/Fetch
 fuzzel/fuzzel.ini       launcher                  (generated)
 mako/config             notifications             (generated)

@@ -48,8 +48,8 @@ hl.config({
         rounding = 14,
         blur = {
             enabled = true,
-            size = 8,        -- how far each pass spreads
-            passes = 3,      -- more passes = smoother, heavier frosted glass
+            size = 4,        -- how far each pass spreads
+            passes = 1,      -- more passes = smoother, heavier frosted glass
             vibrancy = 0.18,
         },
         shadow = {
@@ -101,6 +101,9 @@ bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd(
     "cliphist list | fuzzel --dmenu --prompt 'clipboard ❯  ' | cliphist decode | wl-copy"))
 bind("Print",               hl.dsp.exec_cmd(rice .. "/screenshot.sh area"))
 bind("SHIFT + Print",       hl.dsp.exec_cmd(rice .. "/screenshot.sh full"))
+-- Same screenshots for keyboards without a Print key (Mod+Shift+S is taken by the default config).
+bind(mod .. " + SHIFT + A", hl.dsp.exec_cmd(rice .. "/screenshot.sh area"))
+bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(rice .. "/screenshot.sh full"))
 
 ---- SETTINGS APPS OPEN AS FLOATING WINDOWS ----
 

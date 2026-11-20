@@ -63,7 +63,7 @@ fi
 FILES=(
     hypr/rice.lua hypr/colors.lua hypr/hyprlock.conf
     waybar/config.jsonc waybar/style.css waybar/colors.css
-    kitty/kitty.conf kitty/colors.conf
+    kitty/kitty.conf kitty/colors.conf kitty/auto_font.py
     fastfetch/config.jsonc
     fuzzel/fuzzel.ini
     mako/config
