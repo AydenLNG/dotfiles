@@ -5,7 +5,7 @@ __pycache__/
 *.swp
 *~
 rice-backup/
-thumbs/
+thumbs*/
 
 # Keep wallpapers and screenshots out of the repo (they belong to their artists / are personal)
 Pictures/

@@ -5,16 +5,21 @@
 hyprland
 kitty                   # terminal (shows images, e.g. fastfetch logo)
 waybar                  # bar
-fuzzel                  # app launcher, settings and power menus
-rofi                    # wallpaper picker with previews
-mako                    # notifications
+rofi                    # app launcher (Mod+R) and menus
+quickshell              # centred wallpaper picker (Mod+Shift+W)
+papirus-icon-theme      # app icons in the launcher
+swaync                  # notifications + notification centre (Mod+N)
 libnotify               # notify-send
 awww                    # wallpaper daemon with animated transitions
 imagemagick             # reads wallpaper colours, makes previews
 python                  # runs theme-sync.py
+pipewire                # sound system (cava and the volume module need it running)
+pipewire-pulse          # lets Firefox, Spotify and other apps play through PipeWire
+pipewire-audio          # Bluetooth audio support
 wireplumber             # wpctl, for the bar's volume controls
 playerctl               # media module in the bar
 curl                    # weather module
+less                    # scrolls the troubleshooting notes
 ttf-jetbrains-mono-nerd # font + icons
 noto-fonts              # normal UI font for apps
 adw-gtk-theme           # lets GTK 3 apps follow the wallpaper colours
@@ -31,6 +36,8 @@ thunar-archive-plugin   # "Extract here" / "Compress" in Thunar's right-click me
 pavucontrol             # sound
 network-manager-applet  # Wi-Fi icon + network settings
 blueman                 # Bluetooth
+bluez                   # Bluetooth service (the installer enables it)
+bluez-utils             # bluetoothctl
 nwg-look                # GTK theme, icons, cursor
 nwg-displays            # monitors and resolution
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # settings-menu.sh: one menu (Super+I) that opens each settings tool.
 
-if pgrep -x fuzzel >/dev/null; then pkill -x fuzzel; exit 0; fi
+if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
 
 RICE="$HOME/.config/rice"
 
@@ -23,11 +23,12 @@ items=(
     $'  Lock screen'
     $'\uf090  Login screen'
     $'  Keybinds'
+    $'  Troubleshooting'
     $'  Update system'
     $'  Power'
 )
 
-choice="$(printf '%s\n' "${items[@]}" | fuzzel --dmenu --prompt "settings ❯  " --lines 12 --width 38)" || exit 0
+choice="$(printf '%s\n' "${items[@]}" | rofi -dmenu -i -p "settings" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 420px; } listview { lines: 13; }')" || exit 0
 
 case "$choice" in
     *Wallpaper)         "$RICE/wallpaper.sh" pick ;;
@@ -45,6 +46,7 @@ case "$choice" in
     *"Lock screen")     open_app hyprlock ;;
     *"Login screen")    in_terminal "$RICE/login-setup.sh" ;;
     *Keybinds)          "$RICE/keybinds.sh" ;;
+    *Troubleshooting)   "$RICE/help.sh" ;;
     *"Update system")   in_terminal "sudo pacman -Syu" ;;
     *Power)             "$RICE/power-menu.sh" ;;
 esac

@@ -74,8 +74,10 @@ tooltip label {
 #pulseaudio,
 #network,
 #cpu,
+#custom-gpu,
 #memory,
 #tray,
+#custom-notification,
 #custom-wallpaper,
 #custom-power {
     padding: 0 11px;
@@ -90,8 +92,13 @@ tooltip label {
 #custom-weather   { color: @cyan; }
 #pulseaudio       { color: @blue; }
 #network          { color: @magenta; }
+#network.speed    { color: @green; min-width: 150px; }  /* fixed width so the bar does not jitter */
 #cpu              { color: @red; }
+#custom-gpu       { color: @accent; }
 #memory           { color: @yellow; }
+#custom-notification { color: @fg; }
+#custom-notification.dnd-none,
+#custom-notification.dnd-notification { color: @muted; }
 #custom-wallpaper { color: @accent2; }
 #custom-power     { color: @urgent; margin-right: 4px; }
 
@@ -103,4 +110,14 @@ tooltip label {
 #custom-wallpaper:hover,
 #custom-power:hover {
     background: alpha(@accent, 0.25);
+}
+
+/* Game mode indicator (only visible while game mode is on) */
+#custom-gamemode {
+    padding: 0 11px;
+    margin: 4px 0 4px 6px;
+    border-radius: 10px;
+    color: @bg;
+    background: @accent;
+    font-weight: bold;
 }

@@ -2,12 +2,13 @@
 # wallpaper.sh: change wallpaper with an animated transition, then recolour
 # the desktop (and the login screen, if set up) to match it.
 #
-#   wallpaper.sh pick      preview grid of ~/Pictures/Wallpapers (Super+Shift+W)
+#   wallpaper.sh pick      centred carousel of ~/Pictures/Wallpapers (Super+Shift+W);
+#                          Quickshell picker, or a rofi strip if quickshell is missing
 #   wallpaper.sh random    pick a random one (right-click the bar's wallpaper icon)
 #   wallpaper.sh restore   show the last wallpaper again (runs at login)
 #   wallpaper.sh <file>    set a specific image
 #
-# Idea credit: 43PR/dotfiles (MIT) uses awww transitions for its picker.
+# Idea credit: 43PR/dotfiles (MIT) uses awww transitions and a centred Quickshell picker.
 # This is a separate, smaller implementation using rofi instead of Quickshell.
 
 set -uo pipefail
@@ -15,7 +16,7 @@ set -uo pipefail
 WALL_DIR="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
 STATE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/rice"
 STATE_FILE="$STATE_DIR/wallpaper"
-THUMB_DIR="$STATE_DIR/thumbs"
+THUMB_DIR="$STATE_DIR/thumbs-960"            # sharp enough for the big centre card
 RICE_DIR="$HOME/.config/rice"
 LOGIN_DIR="/usr/local/share/rice-login"      # created by login-setup.sh
 
@@ -48,7 +49,7 @@ list_wallpapers() {
         -printf '%f\n' 2>/dev/null | sort
 }
 
-# Small 16:9 previews, made once and reused until the wallpaper file changes.
+# 16:9 previews, made once and reused until the wallpaper file changes.
 make_thumbnails() {
     mkdir -p "$THUMB_DIR"
     local f thumb made=0
@@ -57,8 +58,8 @@ make_thumbnails() {
         if [[ ! -f "$thumb" || "$WALL_DIR/$f" -nt "$thumb" ]]; then
             (( made == 0 )) && notify "Wallpaper" "Making previews, one moment..."
             made=1
-            magick_cmd "${WALL_DIR}/${f}[0]" -thumbnail '400x225^' -gravity center \
-                -extent 400x225 "$thumb" 2>/dev/null
+            magick_cmd "${WALL_DIR}/${f}[0]" -thumbnail '960x540^' -gravity center \
+                -extent 960x540 "$thumb" 2>/dev/null
         fi
     done
 }
@@ -93,11 +94,63 @@ set_wallpaper() {
     fi
 }
 
+# Quick fade to show a picture without saving it or recolouring anything.
+preview_wallpaper() {
+    ensure_daemon || return 1
+    awww img "$1" --transition-type fade --transition-duration 0.4 --transition-fps "$FPS"
+}
+
 random_transition() { echo "${TRANSITIONS[RANDOM % ${#TRANSITIONS[@]}]}"; }
+
+# Centred one-row picker (rice/wallpicker.qml, needs the quickshell package).
+# The list, colours and current wallpaper are passed in environment variables.
+pick_quickshell() {
+    local walls
+    walls="$(python3 -c '
+import json, os, sys
+wall_dir, thumb_dir = sys.argv[1], sys.argv[2]
+print(json.dumps([{"name": f, "path": os.path.join(wall_dir, f),
+                   "thumb": os.path.join(thumb_dir, f + ".png")} for f in sys.argv[3:]]))
+' "$WALL_DIR" "$THUMB_DIR" "${files[@]}")"
+    RICE_WALLS="$walls" \
+    RICE_PALETTE="$(cat "$STATE_DIR/palette.json" 2>/dev/null || echo '{}')" \
+    RICE_WALL_SCRIPT="$(realpath "$0")" \
+    RICE_WALL_CURRENT="$original" \
+        qs -p "$RICE_DIR/wallpicker.qml" >>"$STATE_DIR/wallpicker.log" 2>&1
+}
+
+# Fallback when quickshell is not installed: rofi carousel strip.
+# Space previews (rofi exits with code 10 and reopens on the same picture),
+# Enter applies and recolours, Esc puts the original back.
+pick_rofi() {
+    local previewed=0 row=0 idx code
+    while true; do
+        idx="$(for f in "${files[@]}"; do
+                   printf '%s\0icon\x1f%s\n' "$f" "$THUMB_DIR/$f.png"
+               done | rofi -dmenu -i -show-icons -p "wallpaper" -format i \
+                      -selected-row "$row" -kb-custom-1 space \
+                      -mesg "Space: preview    Enter: apply    Esc: cancel" \
+                      -theme "$RICE_DIR/wallpaper-picker.rasi")"
+        code=$?
+        case "$code" in
+            0)  [[ -n "$idx" ]] && set_wallpaper "$WALL_DIR/${files[idx]}" "$(random_transition)"
+                return ;;
+            10) [[ -n "$idx" ]] || continue
+                row="$idx"
+                previewed=1
+                preview_wallpaper "$WALL_DIR/${files[idx]}" ;;
+            *)  if (( previewed )) && [[ -n "$original" && -f "$original" ]]; then
+                    preview_wallpaper "$original"
+                fi
+                return ;;
+        esac
+    done
+}
 
 case "${1:-pick}" in
     pick)
         # Pressing the key again closes the picker.
+        if pgrep -f "wallpicker.qml" >/dev/null; then pkill -f "wallpicker.qml"; exit 0; fi
         if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
         mapfile -t files < <(list_wallpapers)
         if (( ${#files[@]} == 0 )); then
@@ -105,12 +158,20 @@ case "${1:-pick}" in
             exit 1
         fi
         make_thumbnails "${files[@]}"
-        # rofi's icon protocol: "name\0icon\x1f/path/to/icon"
-        choice="$(for f in "${files[@]}"; do
-                      printf '%s\0icon\x1f%s\n' "$f" "$THUMB_DIR/$f.png"
-                  done | rofi -dmenu -i -show-icons -p "wallpaper" \
-                         -theme "$RICE_DIR/wallpaper-picker.rasi")" || exit 0
-        [[ -n "$choice" ]] && set_wallpaper "$WALL_DIR/$choice" "$(random_transition)"
+        original="$(cat "$STATE_FILE" 2>/dev/null)"
+        if command -v qs >/dev/null; then
+            pick_quickshell
+        else
+            pick_rofi
+        fi
+        ;;
+    --apply)
+        # Internal: used by the Quickshell picker.
+        set_wallpaper "$2" "$(random_transition)"
+        ;;
+    --preview)
+        # Internal: used by the Quickshell picker.
+        preview_wallpaper "$2"
         ;;
     random)
         mapfile -t files < <(list_wallpapers)

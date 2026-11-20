@@ -1,88 +1,83 @@
 /* ~/.config/rice/wallpaper-picker.rasi
-   Preview grid for wallpaper.sh. Colours come from colors.rasi, which
-   theme-sync.py rewrites whenever the wallpaper changes.
-   Arrow keys / mouse to move, type to search, Enter to apply, Esc to cancel. */
+   Carousel strip for wallpaper.sh: one row of large previews along the bottom
+   of the screen. Colours come from colors.rasi (rewritten by theme-sync.py).
+   Left/Right arrows or mouse wheel to move, type to search by file name,
+   Space to preview behind the strip, Enter or click to apply,
+   Esc to cancel (puts the original wallpaper back). */
 
 @import "colors.rasi"
 
 configuration {
     show-icons: true;
+    scroll-method: 1;       /* continuous: the strip slides one picture at a time */
 }
 
 * {
-    font: "JetBrainsMono Nerd Font 13";
+    font: "JetBrainsMono Nerd Font 12";
     background-color: transparent;
     text-color: @fg;
 }
 
 window {
-    location: center;
-    anchor: center;
-    width: 1120px;
-    padding: 20px;
+    location: south;
+    anchor: south;
+    y-offset: -24px;
+    width: 94%;
+    padding: 16px 20px;
     border: 2px;
     border-color: @accent;
-    border-radius: 16px;
+    border-radius: 18px;
     background-color: @bg-alpha;
 }
 
 mainbox {
-    children: [ inputbar, listview ];
-    spacing: 16px;
+    children: [ inputbar, message, listview ];
+    spacing: 14px;
 }
 
+/* Slim search bar above the strip */
 inputbar {
     children: [ prompt, entry ];
-    spacing: 12px;
-    padding: 10px 14px;
-    border-radius: 12px;
+    spacing: 10px;
+    padding: 6px 12px;
+    border-radius: 10px;
     background-color: @surface;
+    width: 360px;
+    expand: false;
 }
 
-prompt {
-    text-color: @accent;
-}
+prompt { text-color: @accent; }
+entry  { placeholder: "type to search"; placeholder-color: @muted; }
 
-entry {
-    placeholder: "search";
-    placeholder-color: @muted;
-}
+/* Key hints under the search bar */
+message { padding: 0 4px; }
+textbox { text-color: @muted; }
 
 listview {
-    columns: 4;
-    lines: 2;
-    spacing: 14px;
-    fixed-columns: true;
+    layout: horizontal;     /* one row, scrolls sideways */
+    lines: 1;
+    spacing: 18px;
     cycle: true;
     scrollbar: false;
+    fixed-height: true;
 }
 
+/* Pictures only (no file names), so every card is the same width */
 element {
-    orientation: vertical;
-    padding: 10px;
-    spacing: 8px;
-    border-radius: 12px;
+    children: [ element-icon ];
+    padding: 8px;
+    border: 2px;
+    border-color: transparent;
+    border-radius: 14px;
     cursor: pointer;
 }
 
 element selected {
-    background-color: @accent-soft;
-    border: 2px;
     border-color: @accent;
+    background-color: @accent-soft;
 }
 
 element-icon {
-    size: 230px;
-    horizontal-align: 0.5;
+    size: 300px;
     cursor: inherit;
-}
-
-element-text {
-    horizontal-align: 0.5;
-    text-color: @muted;
-    cursor: inherit;
-}
-
-element-text selected {
-    text-color: @fg;
 }

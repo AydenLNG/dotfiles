@@ -9,10 +9,12 @@
 #      ~/.config/rice-backup/<date-time>/
 #   3. Copies the configs into ~/.config (plain copies, no symlinks).
 #   4. Sets the GTK theme to adw-gtk3-dark (so apps can follow the wallpaper).
-#   5. Edits ~/.config/hypr/hyprland.lua: comments out old waybar/mako/swaybg/
-#      awww-daemon autostart lines (rice.lua starts them now), points the file
-#      manager at thunar, and adds require("rice") at the end.
-#   6. Creates ~/Pictures/Wallpapers.
+#   5. Edits ~/.config/hypr/hyprland.lua: comments out old waybar/mako/swaync/
+#      swaybg/awww-daemon autostart lines (rice.lua starts them now), points the
+#      terminal at kitty, the launcher (Mod+R) at rofi, the file manager at
+#      thunar, and adds require("rice") at the end.
+#   6. Creates ~/Pictures/Wallpapers and ~/Pictures/Fetch, and adds one marked
+#      line to ~/.bashrc so "fastfetch" uses rice/fetch.sh (random logo).
 #
 # Options:  SKIP_PACKAGES=1 bash install.sh   skip step 1
 
@@ -65,16 +67,18 @@ FILES=(
     waybar/config.jsonc waybar/style.css waybar/colors.css
     kitty/kitty.conf kitty/colors.conf kitty/auto_font.py
     fastfetch/config.jsonc
-    fuzzel/fuzzel.ini
-    mako/config
+    swaync/config.json swaync/style.css
     cava/config
     imv/config
     gtk-3.0/gtk.css gtk-3.0/settings.ini gtk-3.0/colors.css
     gtk-4.0/gtk.css gtk-4.0/settings.ini gtk-4.0/colors.css
     rice/theme-sync.py rice/wallpaper.sh rice/power-menu.sh rice/weather.sh
     rice/settings-menu.sh rice/keybinds.sh rice/screenshot.sh
+    rice/help.sh rice/gpu.sh rice/troubleshooting.md
+    rice/launcher.sh rice/launcher.rasi rice/menu.rasi rice/clipboard.sh
+    rice/gamemode.sh rice/gamemode-status.sh rice/fetch.sh
     rice/login-setup.sh rice/login-undo.sh
-    rice/wallpaper-picker.rasi rice/colors.rasi
+    rice/wallpaper-picker.rasi rice/colors.rasi rice/wallpicker.qml
 )
 
 backed_up=0
@@ -99,6 +103,16 @@ done
 # overwrites the place you set.
 if [[ ! -f "$CONFIG/rice/weather.conf" ]]; then
     install -D -m 644 "$REPO/rice/weather.conf" "$CONFIG/rice/weather.conf"
+fi
+# Same for your fastfetch logo settings.
+if [[ ! -f "$CONFIG/rice/fetch.conf" ]]; then
+    install -D -m 644 "$REPO/rice/fetch.conf" "$CONFIG/rice/fetch.conf"
+fi
+
+# "fastfetch" picks a random logo that fits the window (rice/fetch.sh).
+# One marked line in ~/.bashrc; delete it to go back to plain fastfetch.
+if [[ -f "$HOME/.bashrc" ]] && ! grep -q 'rice/fetch.sh' "$HOME/.bashrc"; then
+    printf '\nalias fastfetch="$HOME/.config/rice/fetch.sh"   # [rice] random logo that fits the window\n' >> "$HOME/.bashrc"
 fi
 
 # An older waybar "config" file (without .jsonc) would be loaded instead of ours.
@@ -131,9 +145,11 @@ HL="$CONFIG/hypr/hyprland.lua"
 if [[ -f "$HL" ]]; then
     backup hypr/hyprland.lua
     # Comment out autostart lines that rice.lua now handles.
-    sed -E -i 's/^([[:space:]]*)(hl\.exec_cmd\("(waybar|mako|awww-daemon|swaybg)[^"]*"\).*)$/\1-- [rice] \2/' "$HL"
+    sed -E -i 's/^([[:space:]]*)(hl\.exec_cmd\("(waybar|mako|swaync|awww-daemon|swaybg)[^"]*"\).*)$/\1-- [rice] \2/' "$HL"
     # Default config's terminal (Mod+Q) -> kitty.
     sed -E -i 's/^([[:space:]]*(local[[:space:]]+)?terminal[[:space:]]*=[[:space:]]*)"[^"]*"/\1"kitty"/' "$HL"
+    # Default config's launcher (Mod+R) -> the rice's rofi launcher.
+    sed -E -i 's|^([[:space:]]*(local[[:space:]]+)?menu[[:space:]]*=[[:space:]]*)"[^"]*"|\1os.getenv("HOME") .. "/.config/rice/launcher.sh"|' "$HL"
     # Default config's file manager (Mod+E) -> thunar.
     sed -E -i 's/^([[:space:]]*(local[[:space:]]+)?fileManager[[:space:]]*=[[:space:]]*)"[^"]*"/\1"thunar"/' "$HL"
     if ! grep -q 'require("rice")' "$HL"; then
@@ -143,6 +159,25 @@ if [[ -f "$HL" ]]; then
 else
     warn "No ~/.config/hypr/hyprland.lua yet. Start Hyprland once so it creates one,"
     warn "then run this installer again (or add require(\"rice\") to the end yourself)."
+fi
+
+# ---------------------------------------------------------------- 5b. services
+# Sound for this user (PipeWire), and Bluetooth for the system. Both are the
+# standard Arch services; nothing starts that the packages above did not add.
+if command -v systemctl >/dev/null; then
+    systemctl --user enable --now pipewire pipewire-pulse wireplumber >/dev/null 2>&1 \
+        || warn "Could not start PipeWire. Run: systemctl --user enable --now pipewire pipewire-pulse wireplumber"
+    if pacman -Q bluez >/dev/null 2>&1 && ! systemctl is-enabled bluetooth >/dev/null 2>&1; then
+        say "Turning on the Bluetooth service (asks for your password)."
+        sudo systemctl enable --now bluetooth || warn "Could not enable Bluetooth. Run: sudo systemctl enable --now bluetooth"
+    fi
+fi
+
+# Switch notifications from mako to swaync right away if Hyprland is running
+# (from the next login, rice.lua starts swaync by itself).
+if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] && command -v swaync >/dev/null; then
+    pkill -x mako 2>/dev/null || true
+    pgrep -x swaync >/dev/null || setsid -f swaync >/dev/null 2>&1
 fi
 
 # ---------------------------------------------------------------- 6. wallpapers

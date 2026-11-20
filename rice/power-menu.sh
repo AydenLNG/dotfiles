@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# power-menu.sh: small power menu using fuzzel (bar power button).
+# power-menu.sh: small power menu (Mod+Escape and the bar's power button).
 
-if pgrep -x fuzzel >/dev/null; then pkill -x fuzzel; exit 0; fi
+if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
 
 # Nerd Font icons, written as escape codes so the file stays plain text.
 options=(
@@ -11,7 +11,7 @@ options=(
     $'  reboot'
     $'\U000f0425  shutdown'
 )
-choice="$(printf '%s\n' "${options[@]}" | fuzzel --dmenu --prompt "power ❯  " --lines 5 --width 20)" || exit 0
+choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p "power" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 280px; } listview { lines: 5; }')" || exit 0
 
 case "$choice" in
     *lock)

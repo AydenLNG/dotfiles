@@ -1,17 +1,20 @@
 # dotfiles
 
 A Hyprland rice for Arch Linux: frosted-glass terminals and a glass bar, with colours
-that follow the wallpaper. Pick a wallpaper from a preview grid and it swaps in with an
+that follow the wallpaper. Pick a wallpaper from a centred carousel and it swaps in with an
 animated transition, then the terminal, bar, launcher, notifications, file manager,
 settings apps, lock screen, login screen and window borders all recolour to match.
 
 ## Features
 
 - **Glass look:** translucent kitty terminals and waybar, blurred by Hyprland
-- **Wallpaper picker with previews:** thumbnail grid of `~/Pictures/Wallpapers` (rofi), animated transitions via awww
+- **Wallpaper picker:** one centred row of `~/Pictures/Wallpapers` (Quickshell); every wallpaper is a tall, thin slice and the selected one opens up into a wide card in the middle. Space previews it behind, Enter applies with an animated transition (awww), Esc puts the old one back. Falls back to a rofi strip if Quickshell is missing
+- **App launcher:** rofi grid of app icons with Apps / Windows / Run tabs, in the same glass style; every menu uses rofi
+- **Notification centre:** swaync popups plus a panel with history, Do Not Disturb and media controls (bell in the bar)
+- **Game mode:** one key turns off blur, shadows and animations and silences notifications
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
 - **Settings menu:** one menu for sound, Wi-Fi, Bluetooth, display, appearance, weather, lock and login screen, keybinds and system updates
-- **Bar:** workspaces, window title, clock, media, weather, volume, network, CPU, memory, tray, wallpaper and power buttons
+- **Bar:** workspaces, game mode badge, window title, clock, media, weather, volume, network, live up/down speed, CPU, GPU, memory, tray, notifications, wallpaper and power buttons
 - **Weather:** for a place you type in `~/.config/rice/weather.conf`; your location is never detected automatically
 - **Screenshots and clipboard history,** lock screen (hyprlock), cava visualizer
 - **Login screen (optional):** greetd + ReGreet with your current wallpaper and colours, set up and removed with one script each
@@ -21,12 +24,17 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 
 | Keys | Action |
 |---|---|
+| `Mod + R` | App launcher (Apps / Windows / Run) |
 | `Mod + I` | Settings menu |
-| `Mod + Shift + W` | Wallpaper picker with previews (press again to close) |
+| `Mod + N` | Notification centre |
+| `Mod + G` | Game mode on / off |
+| `Mod + Shift + W` | Wallpaper picker: A / D or arrows move, Space previews, Enter applies, Esc cancels |
 | `Mod + Shift + V` | Clipboard history |
 | `Mod + Escape` | Power menu |
 | `Print` | Screenshot of an area (saved to `~/Pictures/Screenshots` and copied) |
 | `Shift + Print` | Screenshot of the whole screen |
+| `Mod + /` | Keybind cheat sheet |
+| `Mod + Shift + N` | Troubleshooting notes (fixes for common problems) |
 | `Mod + Shift + A` / `Mod + Shift + F` | Same screenshots, for keyboards without a Print key |
 
 `Mod` is Super by default. On a keyboard without a Windows key, set `local mod = "ALT"` at the
@@ -38,7 +46,7 @@ settings menu under Keybinds.
 
 | Group | Apps |
 |---|---|
-| Core | hyprland, kitty, waybar, fuzzel, rofi, mako, awww, imagemagick, python, playerctl, curl, fonts, adw-gtk-theme |
+| Core | hyprland, kitty, waybar, rofi, quickshell, papirus-icon-theme, swaync, awww, imagemagick, python, playerctl, curl, fonts, adw-gtk-theme |
 | File manager | thunar, gvfs, tumbler, ffmpegthumbnailer, file-roller, thunar-archive-plugin |
 | Settings | pavucontrol, network-manager-applet, blueman, nwg-look, nwg-displays |
 | Everyday | firefox, imv, mpv |
@@ -66,7 +74,7 @@ Then add images to `~/Pictures/Wallpapers`, log out and back in, and press `Mod 
 
 | App | How |
 |---|---|
-| kitty, waybar, fuzzel, mako, rofi picker, cava | colour files rewritten and reloaded |
+| kitty, waybar, rofi launcher / menus / picker, swaync, cava | colour files rewritten and reloaded |
 | Window borders | `hypr/colors.lua`, then `hyprctl reload` |
 | Thunar, Sound, Bluetooth, Network, nwg apps, File Roller | GTK named colours in `gtk-3.0/colors.css` and `gtk-4.0/colors.css` (needs the adw-gtk3-dark theme) |
 | Lock screen | `hypr/hyprlock.conf` uses the wallpaper, blurred |
@@ -84,17 +92,26 @@ hypr/colors.lua         border colours            (generated)
 hypr/hyprlock.conf      lock screen               (generated)
 waybar/                 bar modules, style, colours
 kitty/                  terminal font, padding, colours; auto_font.py scales text with window width
-fastfetch/              fastfetch shows a random picture from ~/Pictures/Fetch
-fuzzel/fuzzel.ini       launcher                  (generated)
-mako/config             notifications             (generated)
+fastfetch/              fastfetch modules and look
+rice/fetch.sh           "fastfetch": random mix of ~/Pictures/Fetch pictures and text logos, sized to the window
+rice/fetch.conf         picture chance and which text logos (never overwritten on reinstall)
+swaync/config.json      notification centre layout
+swaync/style.css        notification colours      (generated)
 cava/config             audio visualizer
 imv/config              image viewer              (generated)
 gtk-3.0/, gtk-4.0/      GTK theme settings + colours
 rice/theme-sync.py      wallpaper -> colour palette -> all apps
 rice/wallpaper.sh       picker / random / restore
+rice/wallpicker.qml     the centred picker (Quickshell); card sizes at the top
+rice/launcher.sh        Mod + R app launcher (rice/launcher.rasi)
+rice/menu.rasi          shared look of the small menus
+rice/clipboard.sh       Mod + Shift + V clipboard history
+rice/gamemode.sh        Mod + G game mode (rice/gamemode-status.sh for the bar)
 rice/settings-menu.sh   Mod + I menu
 rice/keybinds.sh        keybind cheat sheet
 rice/screenshot.sh      area / full screenshots
+rice/help.sh            troubleshooting viewer; notes in rice/troubleshooting.md
+rice/gpu.sh             AMD GPU usage for the bar
 rice/power-menu.sh      lock / logout / suspend / reboot / shutdown
 rice/weather.sh         weather for the bar (uses wttr.in)
 rice/weather.conf       your weather location (never overwritten on reinstall)
@@ -113,6 +130,7 @@ for good, edit the matching template in `rice/theme-sync.py`.
 | Stronger or softer blur | `blur.size` / `blur.passes` in `hypr/rice.lua` |
 | Gaps and corner rounding | `gaps_in`, `gaps_out`, `rounding` in `hypr/rice.lua` |
 | Transition styles and speed | `TRANSITIONS`, `DURATION` in `rice/wallpaper.sh` |
+| Picker slice and card sizes | `sliceW`, `sliceH`, `selW`, `selH`, `gap` at the top of `rice/wallpicker.qml` |
 | Weather location or units | `LOCATION` / `UNITS` in `~/.config/rice/weather.conf` |
 | Font sizes | `font_size` in `kitty/kitty.conf`, `font-size` in `waybar/style.css`, `{FONT}` lines in `rice/theme-sync.py` |
 | Back to the default palette | `~/.config/rice/theme-sync.py --default` |
@@ -136,7 +154,7 @@ If the login screen fails, press `Ctrl+Alt+F2`, log in, and run `~/.config/rice/
 ## Credits
 
 - Look inspired by the "late night" rice by [1amSimp1e](https://github.com/1amSimp1e/dots). The default fallback palette in `rice/theme-sync.py` uses the colour values from that rice's kitty theme. No code was copied.
-- Wallpaper transition idea, the GTK reload trick, and the structure of the Hyprland Lua config (bind wrapper, separate `colors.lua`), from [43PR/dotfiles](https://github.com/43PR/dotfiles) (MIT). The wallpaper picker is a separate implementation using rofi instead of Quickshell.
+- Wallpaper transition idea, the GTK reload trick, and the structure of the Hyprland Lua config (bind wrapper, separate `colors.lua`), from [43PR/dotfiles](https://github.com/43PR/dotfiles) (MIT). The centred picker layout is also inspired by theirs; `rice/wallpicker.qml` is a separate, much smaller implementation written for this rice.
 
 ## License
 
