@@ -101,6 +101,7 @@ bind(mod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"))       -- no
 bind(mod .. " + G",         hl.dsp.exec_cmd(rice .. "/gamemode.sh"))       -- game mode on/off
 bind("ALT + Tab",           hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh next"))  -- workspaces 1-5, wraps
 bind("ALT + SHIFT + Tab",   hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh prev"))
+bind(mod .. " + CTRL + ALT + Delete", hl.dsp.exec_cmd(rice .. "/reboot-windows.sh"))  -- restart into Windows once
 -- Mod+E (file manager) comes from your hyprland.lua; the installer points it at thunar.
 -- Mod+V is the default "toggle floating", so clipboard history uses Mod+Shift+V.
 bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd(rice .. "/clipboard.sh"))
@@ -114,7 +115,7 @@ bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(rice .. "/screenshot.sh full"))
 
 local floating = {
     "pavucontrol", "blueman-manager", "nm-connection-editor",
-    "nwg-look", "nwg-displays", "file-roller", "FileRoller", "rice-help",
+    "nwg-look", "nwg-displays", "file-roller", "FileRoller", "rice-help", "rice-dialog",
 }
 for _, app in ipairs(floating) do
     local ok, err = pcall(hl.window_rule, {

@@ -9,9 +9,10 @@ options=(
     $'\U000f0343  logout'
     $'  suspend'
     $'  reboot'
+    $'\uf17a  reboot to windows'
     $'\U000f0425  shutdown'
 )
-choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p "power" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 280px; } listview { lines: 5; }')" || exit 0
+choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p "power" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 280px; } listview { lines: 6; }')" || exit 0
 
 case "$choice" in
     *lock)
@@ -23,6 +24,7 @@ case "$choice" in
         ;;
     *logout)   hyprctl dispatch 'hl.dsp.exit()' ;;
     *suspend)  systemctl suspend ;;
+    *windows)  "$HOME/.config/rice/reboot-windows.sh" ;;
     *reboot)   systemctl reboot ;;
     *shutdown) systemctl poweroff ;;
 esac

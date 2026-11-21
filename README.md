@@ -28,6 +28,7 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 | `Mod + I` | Settings menu |
 | `Mod + N` | Notification centre |
 | `Mod + G` | Game mode on / off |
+| `Mod + Ctrl + Alt + Delete` | Restart straight into Windows once (asks for your password; the next restart is Arch again) |
 | `Alt + Tab` / `Alt + Shift + Tab` | Next / previous workspace (1 to 5, wraps around, empty ones included) |
 | `Mod + Shift + W` | Wallpaper picker: A / D or arrows move, Space previews, Enter applies, Esc cancels |
 | `Mod + Shift + V` | Clipboard history |
@@ -99,6 +100,7 @@ rice/fetch.conf         picture chance and which text logos (never overwritten o
 rice/ping.sh            bar ping: internet (1.1.1.1) and router
 rice/media-status.sh    play / pause button in the media drawer
 rice/workspace-cycle.sh Alt + Tab workspace cycling
+rice/reboot-windows.sh  restart into Windows once (grub-reboot); one-time GRUB setup with your OK
 swaync/config.json      notification centre layout
 swaync/style.css        notification colours      (generated)
 cava/config             audio visualizer

@@ -11,6 +11,7 @@ Mod + N                 notification centre
 Mod + G                 game mode on / off
 Alt + Tab               next workspace (1-5, wraps)
 Alt + Shift + Tab       previous workspace
+Mod + Ctrl + Alt + Del  restart into Windows once (asks password)
 Mod + /                 this keybind list
 Mod + Shift + N         troubleshooting notes
 Mod + Shift + W         wallpaper picker (A/D move, Space preview, Enter apply)
