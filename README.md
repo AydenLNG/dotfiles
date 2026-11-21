@@ -14,7 +14,7 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 - **Game mode:** one key turns off blur, shadows and animations and silences notifications
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
 - **Settings menu:** one menu for sound, Wi-Fi, Bluetooth, display, appearance, weather, lock and login screen, keybinds and system updates
-- **Bar:** workspaces, game mode badge, window title, clock, media, weather, volume, network, live up/down speed, CPU, GPU, memory, tray, notifications, wallpaper and power buttons
+- **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock with a calendar on hover, and the song title with buttons on hover. Right: volume with a slider on hover, network, internet ping (router ping on hover), a chart icon whose drawer holds CPU, GPU, RAM, weather and the tray, notifications, wallpaper and power
 - **Weather:** for a place you type in `~/.config/rice/weather.conf`; your location is never detected automatically
 - **Screenshots and clipboard history,** lock screen (hyprlock), cava visualizer
 - **Login screen (optional):** greetd + ReGreet with your current wallpaper and colours, set up and removed with one script each
@@ -28,6 +28,7 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 | `Mod + I` | Settings menu |
 | `Mod + N` | Notification centre |
 | `Mod + G` | Game mode on / off |
+| `Alt + Tab` / `Alt + Shift + Tab` | Next / previous workspace (1 to 5, wraps around, empty ones included) |
 | `Mod + Shift + W` | Wallpaper picker: A / D or arrows move, Space previews, Enter applies, Esc cancels |
 | `Mod + Shift + V` | Clipboard history |
 | `Mod + Escape` | Power menu |
@@ -93,8 +94,11 @@ hypr/hyprlock.conf      lock screen               (generated)
 waybar/                 bar modules, style, colours
 kitty/                  terminal font, padding, colours; auto_font.py scales text with window width
 fastfetch/              fastfetch modules and look
-rice/fetch.sh           "fastfetch": random mix of ~/Pictures/Fetch pictures and text logos, sized to the window
+rice/fetch.sh           "fastfetch": logo and number of lines chosen to fit the window (random mix of ~/Pictures/Fetch pictures and text logos when there is room)
 rice/fetch.conf         picture chance and which text logos (never overwritten on reinstall)
+rice/ping.sh            bar ping: internet (1.1.1.1) and router
+rice/media-status.sh    play / pause button in the media drawer
+rice/workspace-cycle.sh Alt + Tab workspace cycling
 swaync/config.json      notification centre layout
 swaync/style.css        notification colours      (generated)
 cava/config             audio visualizer

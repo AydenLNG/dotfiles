@@ -4,11 +4,13 @@
 
 if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
 
-cat <<'EOF' | rofi -dmenu -i -p "keybinds" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 620px; } listview { lines: 18; }' >/dev/null
+cat <<'EOF' | rofi -dmenu -i -p "keybinds" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 620px; } listview { lines: 20; }' >/dev/null
 Mod + R                 app launcher (Apps / Windows / Run tabs)
 Mod + I                 settings menu
 Mod + N                 notification centre
 Mod + G                 game mode on / off
+Alt + Tab               next workspace (1-5, wraps)
+Alt + Shift + Tab       previous workspace
 Mod + /                 this keybind list
 Mod + Shift + N         troubleshooting notes
 Mod + Shift + W         wallpaper picker (A/D move, Space preview, Enter apply)
@@ -19,10 +21,11 @@ Shift + Print           screenshot of the whole screen
 Mod + Shift + A         screenshot of an area (no Print key)
 Mod + Shift + F         screenshot of the whole screen (no Print key)
 Bar: wallpaper icon     left click picker, right click random
-Bar: media              click play/pause, scroll next/previous
-Bar: volume             click mute, scroll volume
-Bar: network            click for connection settings
-Bar: GPU / speed        hover GPU for VRAM; speed is live down / up
+Bar: media              hover for buttons; click title play/pause; scroll next/prev
+Bar: volume             hover for slider; click mute; right click sound settings
+Bar: network / ping     hover for name / router ping; click network settings
+Bar: chart icon         hover for CPU, GPU, RAM, weather, tray
+Bar: clock              hover calendar; scroll months; right click year
 Bar: bell               click notification centre, right click Do Not Disturb
 --- from your own hyprland.lua ---
 Mod + Q                 terminal (default config)

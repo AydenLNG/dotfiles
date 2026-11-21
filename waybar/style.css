@@ -1,22 +1,21 @@
 /* ~/.config/waybar/style.css
-   Glass bar. All colours come from colors.css, which theme-sync.py rewrites
-   whenever the wallpaper changes. Hyprland blurs what is behind the bar. */
+   Glass "islands" bar: the bar itself is invisible and each group is a floating
+   pill. All colours come from colors.css, which theme-sync.py rewrites whenever
+   the wallpaper changes. Hyprland blurs what is behind the pills. */
 
 @import "colors.css";
 
 * {
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 16px;
+    font-size: 15px;
     min-height: 0;
     border: none;
     border-radius: 0;
 }
 
 window#waybar {
-    background: alpha(@bg, 0.55);
+    background: transparent;
     color: @fg;
-    border-radius: 14px;
-    border: 1px solid alpha(@accent, 0.25);
 }
 
 tooltip {
@@ -29,15 +28,30 @@ tooltip label {
     color: @fg;
 }
 
-/* ---- workspaces ---- */
+/* ---- islands ---- */
 
-#workspaces {
-    margin: 4px 0 4px 4px;
+#island-left,
+#island-center,
+#island-right {
+    background: alpha(@bg, 0.55);
+    border: 1px solid alpha(@accent, 0.25);
+    border-radius: 16px;
+    padding: 0 6px;
 }
 
-#workspaces button {
+/* every module inside an island: no background of its own */
+#workspaces, #clock, #mpris, #custom-media-prev, #custom-media-play, #custom-media-next,
+#pulseaudio, #network, #custom-ping, #custom-system, #cpu, #custom-gpu, #memory,
+#custom-weather, #tray, #custom-notification, #custom-wallpaper, #custom-power {
     padding: 0 9px;
-    margin: 0 2px;
+    background: transparent;
+}
+
+/* ---- workspaces ---- */
+
+#workspaces button {
+    padding: 0 8px;
+    margin: 4px 1px;
     color: @muted;
     background: transparent;
     border-radius: 10px;
@@ -61,63 +75,78 @@ tooltip label {
     text-shadow: none;
 }
 
-#window {
-    color: @muted;
-    padding: 0 10px;
-}
-
-/* ---- modules ---- */
-
-#clock,
-#mpris,
-#custom-weather,
-#pulseaudio,
-#network,
-#cpu,
-#custom-gpu,
-#memory,
-#tray,
-#custom-notification,
-#custom-wallpaper,
-#custom-power {
-    padding: 0 11px;
-    margin: 4px 0;
-    border-radius: 10px;
-    background: alpha(@surface, 0.65);
-}
-
-#clock            { color: @fg; font-weight: bold; }
-#mpris            { color: @accent2; margin-left: 6px; }
-#mpris.paused     { color: @muted; }
-#custom-weather   { color: @cyan; }
-#pulseaudio       { color: @blue; }
-#network          { color: @magenta; }
-#network.speed    { color: @green; min-width: 150px; }  /* fixed width so the bar does not jitter */
-#cpu              { color: @red; }
-#custom-gpu       { color: @accent; }
-#memory           { color: @yellow; }
-#custom-notification { color: @fg; }
-#custom-notification.dnd-none,
-#custom-notification.dnd-notification { color: @muted; }
-#custom-wallpaper { color: @accent2; }
-#custom-power     { color: @urgent; margin-right: 4px; }
-
-#pulseaudio.muted,
-#network.disconnected {
-    color: @muted;
-}
-
-#custom-wallpaper:hover,
-#custom-power:hover {
-    background: alpha(@accent, 0.25);
-}
-
-/* Game mode indicator (only visible while game mode is on) */
+/* Game mode badge (only visible while game mode is on) */
 #custom-gamemode {
-    padding: 0 11px;
-    margin: 4px 0 4px 6px;
+    padding: 0 10px;
+    margin: 5px 4px;
     border-radius: 10px;
     color: @bg;
     background: @accent;
     font-weight: bold;
+}
+
+/* ---- centre: clock + media ---- */
+
+#clock            { color: @fg; font-weight: bold; }
+#mpris            { color: @accent2; }
+#mpris.paused     { color: @muted; }
+#custom-media-prev,
+#custom-media-play,
+#custom-media-next { color: @accent2; padding: 0 7px; }
+#custom-media-prev:hover,
+#custom-media-play:hover,
+#custom-media-next:hover { color: @fg; }
+
+/* ---- right: system ---- */
+
+#pulseaudio       { color: @blue; }
+#pulseaudio.muted { color: @muted; }
+
+/* volume slider (slides out from the volume) */
+#pulseaudio-slider { padding: 0 8px 0 2px; }
+#pulseaudio-slider slider {
+    min-height: 0;
+    min-width: 0;
+    opacity: 0;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+}
+#pulseaudio-slider trough {
+    min-height: 6px;
+    min-width: 90px;
+    border-radius: 6px;
+    background: alpha(@fg, 0.18);
+}
+#pulseaudio-slider highlight {
+    min-width: 6px;
+    border-radius: 6px;
+    background: @blue;
+}
+
+#network              { color: @magenta; }
+#network.disconnected { color: @muted; }
+
+#custom-ping          { color: @green; min-width: 62px; }  /* fixed width so the bar does not jitter */
+#custom-ping.ok       { color: @yellow; }
+#custom-ping.bad      { color: @urgent; }
+
+#custom-system        { color: @accent; }
+#cpu                  { color: @red; }
+#custom-gpu           { color: @accent; }
+#memory               { color: @yellow; }
+#custom-weather       { color: @cyan; }
+
+#custom-notification  { color: @fg; }
+#custom-notification.dnd-none,
+#custom-notification.dnd-notification { color: @muted; }
+#custom-wallpaper     { color: @accent2; }
+#custom-power         { color: @urgent; }
+
+#custom-system:hover,
+#custom-wallpaper:hover,
+#custom-power:hover,
+#custom-notification:hover {
+    background: alpha(@accent, 0.22);
+    border-radius: 10px;
 }

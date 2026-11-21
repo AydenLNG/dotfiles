@@ -1,26 +1,64 @@
 // ~/.config/waybar/config.jsonc
-// Slim floating glass bar. Colours come from colors.css (synced to the wallpaper).
+// Glass "islands" bar: three floating pills (workspaces | clock + media | system).
+// Drawers keep it tidy: hover the music title for controls, the volume icon for a
+// slider, and the chart icon for CPU / GPU / RAM / weather / tray.
+// Colours come from colors.css (synced to the wallpaper).
 // Icons are Nerd Font glyphs written as \uXXXX escapes.
 {
     "layer": "top",
     "position": "top",
-    "height": 32,
+    "height": 34,
     "margin-top": 8,
     "margin-left": 12,
     "margin-right": 12,
-    "spacing": 6,
+    "spacing": 0,
 
-    "modules-left": ["hyprland/workspaces", "custom/gamemode", "hyprland/window"],
-    "modules-center": ["clock", "mpris"],
-    "modules-right": ["custom/weather", "pulseaudio", "network", "network#speed", "cpu", "custom/gpu", "memory", "tray", "custom/notification", "custom/wallpaper", "custom/power"],
+    "modules-left": ["group/island-left"],
+    "modules-center": ["group/island-center"],
+    "modules-right": ["group/island-right"],
 
+    // ---------------------------------------------------------------- islands
+    "group/island-left": {
+        "orientation": "horizontal",
+        "modules": ["hyprland/workspaces", "custom/gamemode"]
+    },
+    "group/island-center": {
+        "orientation": "horizontal",
+        "modules": ["clock", "group/media"]
+    },
+    "group/island-right": {
+        "orientation": "horizontal",
+        "modules": ["group/volume", "network", "custom/ping", "group/system",
+                    "custom/notification", "custom/wallpaper", "custom/power"]
+    },
+
+    // ---------------------------------------------------------------- drawers
+    // Media: only the title shows; hover it for previous / play-pause / next.
+    "group/media": {
+        "orientation": "horizontal",
+        "drawer": { "transition-duration": 350, "children-class": "media-btn", "transition-left-to-right": true },
+        "modules": ["mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
+    },
+    // Volume: hover the volume for a slider.
+    "group/volume": {
+        "orientation": "horizontal",
+        "drawer": { "transition-duration": 350, "children-class": "vol-slider", "transition-left-to-right": true },
+        "modules": ["pulseaudio", "pulseaudio/slider"]
+    },
+    // System: hover (or click) the chart icon for CPU, GPU, RAM, weather and tray icons.
+    "group/system": {
+        "orientation": "horizontal",
+        "drawer": { "transition-duration": 400, "children-class": "sys-item", "transition-left-to-right": false },
+        "modules": ["custom/system", "cpu", "custom/gpu", "memory", "custom/weather", "tray"]
+    },
+
+    // ---------------------------------------------------------------- modules
     "hyprland/workspaces": {
         "format": "{id}",
         "on-click": "activate",
         "persistent-workspaces": { "*": 5 }
     },
 
-    // Shows "game" with a rocket while game mode (Mod+G) is on; hidden otherwise.
     "custom/gamemode": {
         "exec": "$HOME/.config/rice/gamemode-status.sh",
         "return-type": "json",
@@ -29,84 +67,114 @@
         "on-click": "$HOME/.config/rice/gamemode.sh"
     },
 
-    "hyprland/window": {
-        "max-length": 45,
-        "separate-outputs": true
-    },
-
+    // Hover for a month calendar; scroll to change month; right-click for the year.
     "clock": {
-        "format": "  {:%a %d %b  %H:%M}",
-        "tooltip-format": "<tt>{calendar}</tt>"
+        "format": "\uf017  {:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
+            "format": {
+                "months": "<b>{}</b>",
+                "today": "<b><u>{}</u></b>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
     },
 
-    // Song / video playing in any MPRIS app (Firefox, Spotify, mpv...).
-    // Hidden when nothing is playing. Click: play/pause, scroll: next/previous.
+    // Song / video playing in any app (Firefox, Spotify...). Title only;
+    // click to play / pause, scroll for next / previous.
     "mpris": {
-        "format": "{status_icon}  {dynamic}",
-        "format-paused": "{status_icon}  <i>{dynamic}</i>",
+        "format": "\uf001  {dynamic}",
+        "format-paused": "\uf001  <i>{dynamic}</i>",
         "dynamic-order": ["title", "artist"],
-        "dynamic-len": 40,
-        "status-icons": { "playing": "", "paused": "", "stopped": "" },
+        "dynamic-len": 36,
+        "on-click": "playerctl play-pause",
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous"
     },
-
-    // Weather for the place set in ~/.config/rice/weather.conf (never auto-detected).
-    "custom/weather": {
-        "exec": "$HOME/.config/rice/weather.sh",
+    "custom/media-prev": {
+        "format": "\uf048",
+        "tooltip": false,
+        "on-click": "playerctl previous"
+    },
+    // Button style: shows pause while playing, play while paused.
+    "custom/media-play": {
+        "exec": "$HOME/.config/rice/media-status.sh",
         "return-type": "json",
-        "interval": 1800
+        "on-click": "playerctl play-pause"
+    },
+    "custom/media-next": {
+        "format": "\uf051",
+        "tooltip": false,
+        "on-click": "playerctl next"
     },
 
     "pulseaudio": {
         "format": "{icon}  {volume}%",
-        "format-muted": "  muted",
-        "format-icons": { "default": ["", "", ""] },
+        "format-muted": "\uf026  muted",
+        "format-icons": { "default": ["\uf026", "\uf027", "\uf028"] },
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-click-right": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
+    "pulseaudio/slider": {
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal"
+    },
 
+    // Icon only; hover for the network name and signal.
     "network": {
-        "format-wifi": "  {essid}",
-        "format-ethernet": "  wired",
-        "format-disconnected": "  offline",
+        "format-wifi": "\uf1eb",
+        "format-ethernet": "\uf0e8",
+        "format-disconnected": "\uf127",
         "tooltip-format-wifi": "{essid}  {signalStrength}% signal  {frequency} GHz",
-        "tooltip-format-ethernet": "{ifname}",
+        "tooltip-format-ethernet": "Wired ({ifname})",
+        "tooltip-format-disconnected": "Offline",
         "on-click": "nm-connection-editor"
     },
 
-    // Live download / upload speed of the active connection.
-    "network#speed": {
-        "interval": 2,
-        "format": "\uf063 {bandwidthDownBytes}  \uf062 {bandwidthUpBytes}",
-        "format-disconnected": "",
-        "tooltip": false
+    // Internet ping (to 1.1.1.1); hover also shows the router ping, which tells
+    // Wi-Fi problems apart from internet problems.
+    "custom/ping": {
+        "exec": "$HOME/.config/rice/ping.sh",
+        "return-type": "json",
+        "interval": 10
     },
 
+    "custom/system": {
+        "format": "\uf080",
+        "tooltip-format": "System stats: hover or click"
+    },
     "cpu": {
-        "format": "  {usage}%",
+        "format": "\uf2db  {usage}%",
         "interval": 3
     },
-
-    // AMD GPU usage (hidden on PCs without an AMD card). Hover for VRAM.
     "custom/gpu": {
         "exec": "$HOME/.config/rice/gpu.sh",
         "return-type": "json",
         "interval": 3
     },
-
     "memory": {
-        "format": "  {percentage}%",
+        "format": "\uf1c0  {percentage}%",
         "interval": 5
     },
-
+    "custom/weather": {
+        "exec": "$HOME/.config/rice/weather.sh",
+        "return-type": "json",
+        "interval": 1800
+    },
     "tray": {
         "spacing": 8
     },
 
-    // Notification centre (swaync). Click: open the panel. Right-click: Do Not Disturb.
-    // Shows a dot when there are unread notifications, a crossed bell in DND.
     "custom/notification": {
         "exec": "swaync-client -swb",
         "return-type": "json",

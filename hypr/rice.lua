@@ -99,6 +99,8 @@ bind(mod .. " + slash",     hl.dsp.exec_cmd(rice .. "/keybinds.sh"))       -- ke
 bind(mod .. " + SHIFT + N", hl.dsp.exec_cmd(rice .. "/help.sh"))           -- troubleshooting notes
 bind(mod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"))       -- notification centre
 bind(mod .. " + G",         hl.dsp.exec_cmd(rice .. "/gamemode.sh"))       -- game mode on/off
+bind("ALT + Tab",           hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh next"))  -- workspaces 1-5, wraps
+bind("ALT + SHIFT + Tab",   hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh prev"))
 -- Mod+E (file manager) comes from your hyprland.lua; the installer points it at thunar.
 -- Mod+V is the default "toggle floating", so clipboard history uses Mod+Shift+V.
 bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd(rice .. "/clipboard.sh"))

@@ -124,6 +124,11 @@ Mod+Shift+W needs the quickshell package (sudo pacman -S quickshell); without it
 get the older rofi strip instead. Errors are logged in:
     ~/.cache/rice/wallpicker.log
 
+## Bar ping shows -- or is red
+"--" means no reply from the internet. Hover it: if the router ping is fine, the problem
+is the internet connection or the router's link to it; if the router ping is also slow or
+missing, it is the Wi-Fi between the PC and the router.
+
 ## fastfetch picture overlaps the text
 The window is too narrow for a picture. The rice's fastfetch picks a smaller logo in
 narrow windows by itself; if you still see overlap, make the window wider, or raise
