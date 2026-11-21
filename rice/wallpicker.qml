@@ -49,7 +49,8 @@ ShellRoot {
         root.run(["--preview", root.walls[i].path])
     }
     function cancel() {
-        if (root.previewed && root.original !== "") root.run(["--preview", root.original])
+        // Put the original back (also restarts a video wallpaper).
+        if (root.previewed) root.run(["--restore"])
         Qt.quit()
     }
 
@@ -138,6 +139,27 @@ ShellRoot {
                         asynchronous: true
                         cache: true
                         sourceSize.height: 540
+                    }
+                }
+
+                // "LIVE" badge on video and GIF wallpapers
+                Rectangle {
+                    visible: root.walls[slot.index].live === true && slot.current
+                    anchors.top: card.top
+                    anchors.left: card.left
+                    anchors.margins: 12
+                    width: liveText.implicitWidth + 16
+                    height: liveText.implicitHeight + 6
+                    radius: 8
+                    color: root.col("accent", "#86aaec")
+                    Text {
+                        id: liveText
+                        anchors.centerIn: parent
+                        text: "LIVE"
+                        color: root.col("bg", "#14151e")
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 12
+                        font.bold: true
                     }
                 }
 

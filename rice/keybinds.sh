@@ -8,7 +8,7 @@ cat <<'EOF' | rofi -dmenu -i -p "keybinds" -theme "$HOME/.config/rice/menu.rasi"
 Mod + R                 app launcher (Apps / Windows / Run tabs)
 Mod + I                 settings menu
 Mod + N                 notification centre
-Mod + G                 game mode on / off
+Mod + G                 game mode on / off (also pauses live wallpaper)
 Alt + Tab               next workspace (1-5, wraps)
 Alt + Shift + Tab       previous workspace
 Mod + Ctrl + Alt + Del  restart into Windows once (asks password)

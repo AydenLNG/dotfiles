@@ -6,10 +6,15 @@
 #                          Quickshell picker, or a rofi strip if quickshell is missing
 #   wallpaper.sh random    pick a random one (right-click the bar's wallpaper icon)
 #   wallpaper.sh restore   show the last wallpaper again (runs at login)
-#   wallpaper.sh <file>    set a specific image
+#   wallpaper.sh <file>    set a specific image or video
+#
+# Live wallpapers: GIFs play through awww. Videos (mp4, webm, mkv, mov) play
+# through mpvpaper (AUR: yay -S mpvpaper), muted and looping, on a layer just
+# above awww; a still frame sits underneath and is used for the colours.
+# Game mode (Mod+G) pauses the video; it also pauses behind fullscreen windows.
 #
 # Idea credit: 43PR/dotfiles (MIT) uses awww transitions and a centred Quickshell picker.
-# This is a separate, smaller implementation using rofi instead of Quickshell.
+# This is a separate, smaller implementation.
 
 set -uo pipefail
 
@@ -17,6 +22,8 @@ WALL_DIR="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
 STATE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/rice"
 STATE_FILE="$STATE_DIR/wallpaper"
 THUMB_DIR="$STATE_DIR/thumbs-960"            # sharp enough for the big centre card
+FRAME_DIR="$STATE_DIR/frames"                # still frames of video wallpapers
+GAMEMODE_STATE="$STATE_DIR/gamemode"
 RICE_DIR="$HOME/.config/rice"
 LOGIN_DIR="/usr/local/share/rice-login"      # created by login-setup.sh
 
@@ -45,8 +52,43 @@ ensure_daemon() {
 
 list_wallpapers() {
     find "$WALL_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' \
-        -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' -o -iname '*.avif' \) \
+        -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' -o -iname '*.avif' \
+        -o -iname '*.mp4' -o -iname '*.webm' -o -iname '*.mkv' -o -iname '*.mov' -o -iname '*.m4v' \) \
         -printf '%f\n' 2>/dev/null | sort
+}
+
+is_video() { [[ "${1,,}" =~ \.(mp4|webm|mkv|mov|m4v)$ ]]; }
+
+# Full-size still frame of a video (1 second in), made once and reused.
+video_frame() {
+    local video="$1" frame
+    frame="$FRAME_DIR/$(basename "$video").png"
+    mkdir -p "$FRAME_DIR"
+    if [[ ! -f "$frame" || "$video" -nt "$frame" ]]; then
+        ffmpeg -loglevel error -y -ss 1 -i "$video" -frames:v 1 "$frame" 2>/dev/null \
+            || ffmpeg -loglevel error -y -i "$video" -frames:v 1 "$frame" 2>/dev/null
+    fi
+    printf '%s\n' "$frame"
+}
+
+stop_video() { pkill -x mpvpaper 2>/dev/null; return 0; }
+
+# Play a video wallpaper: muted, looping, hardware-decoded, filling the screen.
+# -p -a FULL pauses it automatically while a fullscreen window covers it.
+start_video() {
+    local video="$1"
+    stop_video
+    if ! command -v mpvpaper >/dev/null; then
+        notify "Wallpaper" "Video wallpapers need mpvpaper: yay -S mpvpaper (showing a still frame for now)"
+        return 1
+    fi
+    setsid -f mpvpaper -p -a FULL -l bottom \
+        -o "no-audio loop hwdec=auto panscan=1.0" ALL "$video" >/dev/null 2>&1
+    # Game mode on: start paused.
+    if [[ -f "$GAMEMODE_STATE" ]]; then
+        sleep 1; pkill -STOP -x mpvpaper 2>/dev/null
+    fi
+    return 0
 }
 
 # 16:9 previews, made once and reused until the wallpaper file changes.
@@ -58,7 +100,9 @@ make_thumbnails() {
         if [[ ! -f "$thumb" || "$WALL_DIR/$f" -nt "$thumb" ]]; then
             (( made == 0 )) && notify "Wallpaper" "Making previews, one moment..."
             made=1
-            magick_cmd "${WALL_DIR}/${f}[0]" -thumbnail '960x540^' -gravity center \
+            local src="${WALL_DIR}/${f}"
+            is_video "$src" && src="$(video_frame "$src")"
+            magick_cmd "${src}[0]" -thumbnail '960x540^' -gravity center \
                 -extent 960x540 "$thumb" 2>/dev/null
         fi
     done
@@ -68,21 +112,34 @@ make_thumbnails() {
 update_login_wallpaper() {
     local img="$1"
     [[ -d "$LOGIN_DIR" && -w "$LOGIN_DIR" ]] || return 0
+    is_video "$img" && img="$(video_frame "$img")"     # login screen gets a still frame
     magick_cmd "${img}[0]" -resize '2560x1440^' -quality 90 "$LOGIN_DIR/wallpaper.jpg.tmp" 2>/dev/null \
         && mv "$LOGIN_DIR/wallpaper.jpg.tmp" "$LOGIN_DIR/wallpaper.jpg" \
         && chmod 644 "$LOGIN_DIR/wallpaper.jpg"
 }
 
 set_wallpaper() {
-    local img="$1" transition="$2"
-    [[ -f "$img" ]] || { notify "Wallpaper" "File not found: $img"; return 1; }
+    local wall="$1" transition="$2" img
+    [[ -f "$wall" ]] || { notify "Wallpaper" "File not found: $wall"; return 1; }
     ensure_daemon || return 1
+
+    # Videos: awww shows a still frame (also used for the colours), mpvpaper plays on top.
+    img="$wall"
+    is_video "$wall" && img="$(video_frame "$wall")"
 
     awww img "$img" --transition-type "$transition" \
         --transition-duration "$DURATION" --transition-fps "$FPS"
 
+    if is_video "$wall"; then
+        # Let the transition to the still frame finish, then start the video.
+        [[ "$transition" != "none" ]] && sleep "$DURATION"
+        start_video "$wall"
+    else
+        stop_video
+    fi
+
     mkdir -p "$STATE_DIR"
-    printf '%s\n' "$img" > "$STATE_FILE"
+    printf '%s\n' "$wall" > "$STATE_FILE"
 
     # Recolour everything and update the login screen, in the background so the
     # transition stays smooth. Skipped on restore (nothing changed since last time).
@@ -95,9 +152,14 @@ set_wallpaper() {
 }
 
 # Quick fade to show a picture without saving it or recolouring anything.
+# Videos preview as their still frame; a playing video is stopped so the
+# preview is visible (Esc / --restore brings it back).
 preview_wallpaper() {
     ensure_daemon || return 1
-    awww img "$1" --transition-type fade --transition-duration 0.4 --transition-fps "$FPS"
+    local img="$1"
+    is_video "$img" && img="$(video_frame "$img")"
+    stop_video
+    awww img "$img" --transition-type fade --transition-duration 0.4 --transition-fps "$FPS"
 }
 
 random_transition() { echo "${TRANSITIONS[RANDOM % ${#TRANSITIONS[@]}]}"; }
@@ -109,8 +171,10 @@ pick_quickshell() {
     walls="$(python3 -c '
 import json, os, sys
 wall_dir, thumb_dir = sys.argv[1], sys.argv[2]
+video = (".mp4", ".webm", ".mkv", ".mov", ".m4v")
 print(json.dumps([{"name": f, "path": os.path.join(wall_dir, f),
-                   "thumb": os.path.join(thumb_dir, f + ".png")} for f in sys.argv[3:]]))
+                   "thumb": os.path.join(thumb_dir, f + ".png"),
+                   "live": f.lower().endswith(video + (".gif",))} for f in sys.argv[3:]]))
 ' "$WALL_DIR" "$THUMB_DIR" "${files[@]}")"
     RICE_WALLS="$walls" \
     RICE_PALETTE="$(cat "$STATE_DIR/palette.json" 2>/dev/null || echo '{}')" \
@@ -140,7 +204,7 @@ pick_rofi() {
                 previewed=1
                 preview_wallpaper "$WALL_DIR/${files[idx]}" ;;
             *)  if (( previewed )) && [[ -n "$original" && -f "$original" ]]; then
-                    preview_wallpaper "$original"
+                    set_wallpaper "$original" none     # back to the original (restarts a video)
                 fi
                 return ;;
         esac
@@ -154,7 +218,7 @@ case "${1:-pick}" in
         if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
         mapfile -t files < <(list_wallpapers)
         if (( ${#files[@]} == 0 )); then
-            notify "Wallpaper" "No images in $WALL_DIR"
+            notify "Wallpaper" "No wallpapers in $WALL_DIR"
             exit 1
         fi
         make_thumbnails "${files[@]}"
@@ -172,6 +236,11 @@ case "${1:-pick}" in
     --preview)
         # Internal: used by the Quickshell picker.
         preview_wallpaper "$2"
+        ;;
+    --restore)
+        # Internal: picker cancelled after previewing; put the original back.
+        last="$(cat "$STATE_FILE" 2>/dev/null)"
+        [[ -n "$last" && -f "$last" ]] && set_wallpaper "$last" none
         ;;
     random)
         mapfile -t files < <(list_wallpapers)

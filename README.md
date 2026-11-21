@@ -9,9 +9,10 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 
 - **Glass look:** translucent kitty terminals and waybar, blurred by Hyprland
 - **Wallpaper picker:** one centred row of `~/Pictures/Wallpapers` (Quickshell); every wallpaper is a tall, thin slice and the selected one opens up into a wide card in the middle. Space previews it behind, Enter applies with an animated transition (awww), Esc puts the old one back. Falls back to a rofi strip if Quickshell is missing
+- **Live wallpapers:** GIFs play straight away; videos (mp4, webm, mkv, mov) play muted and looping once `mpvpaper` is installed from the AUR (`yay -S mpvpaper`). They show a LIVE badge in the picker, the colours come from a still frame, and they pause during game mode or behind fullscreen windows
 - **App launcher:** rofi grid of app icons with Apps / Windows / Run tabs, in the same glass style; every menu uses rofi
 - **Notification centre:** swaync popups plus a panel with history, Do Not Disturb and media controls (bell in the bar)
-- **Game mode:** one key turns off blur, shadows and animations and silences notifications
+- **Game mode:** one key turns off blur, shadows and animations, silences notifications and pauses a live wallpaper
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
 - **Settings menu:** one menu for sound, Wi-Fi, Bluetooth, display, appearance, weather, lock and login screen, keybinds and system updates
 - **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock with a calendar on hover, and the song title with buttons on hover. Right: volume with a slider on hover, network, internet ping (router ping on hover), a chart icon whose drawer holds CPU, GPU, RAM, weather and the tray, notifications, wallpaper and power

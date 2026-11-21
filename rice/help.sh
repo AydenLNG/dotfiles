@@ -8,8 +8,10 @@ NOTES="$HOME/.config/rice/troubleshooting.md"
 if pgrep -x rofi >/dev/null; then pkill -x rofi; exit 0; fi
 
 topics="$(grep '^## ' "$NOTES" | sed 's/^## //')"
-choice="$( { echo "All notes"; echo "$topics"; } \
+choice="$( { echo "Keybinds (also Mod+/)"; echo "All notes"; echo "$topics"; } \
     | rofi -dmenu -i -p "help" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 560px; } listview { lines: 14; }')" || exit 0
+
+if [[ "$choice" == Keybinds* ]]; then exec "$HOME/.config/rice/keybinds.sh"; fi
 
 tmp="$(mktemp -t rice-help.XXXXXX)"
 if [[ "$choice" == "All notes" ]]; then

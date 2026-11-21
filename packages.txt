@@ -11,6 +11,9 @@ papirus-icon-theme      # app icons in the launcher
 swaync                  # notifications + notification centre (Mod+N)
 libnotify               # notify-send
 awww                    # wallpaper daemon with animated transitions
+ffmpeg                  # still frames of video wallpapers (previews and colours)
+# Optional, from the AUR (not installed by install.sh): mpvpaper, plays video
+# wallpapers. Install with: yay -S mpvpaper (check its PKGBUILD first).
 imagemagick             # reads wallpaper colours, makes previews
 python                  # runs theme-sync.py
 pipewire                # sound system (cava and the volume module need it running)

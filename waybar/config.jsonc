@@ -151,10 +151,10 @@
 
     "custom/system": {
         "format": "\uf080",
-        "tooltip-format": "System stats: hover or click"
+        "tooltip-format": "System: CPU, GPU, RAM, weather, tray"
     },
     "cpu": {
-        "format": "\uf2db  {usage}%",
+        "format": "CPU {usage}%",
         "interval": 3
     },
     "custom/gpu": {
@@ -163,7 +163,8 @@
         "interval": 3
     },
     "memory": {
-        "format": "\uf1c0  {percentage}%",
+        "format": "RAM {percentage}%",
+        "tooltip-format": "Memory: {used:0.1f} / {total:0.1f} GiB used",
         "interval": 5
     },
     "custom/weather": {

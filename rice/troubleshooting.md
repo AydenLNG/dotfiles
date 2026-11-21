@@ -119,6 +119,12 @@ Paste in kitty: Ctrl+Shift+V (plain Ctrl+V does not paste in terminals).
 Middle-click pastes whatever text is highlighted.
 Screenshots without a Print key: Mod+Shift+A (area), Mod+Shift+F (full).
 
+## Live (video) wallpaper shows only a still picture
+Video wallpapers need mpvpaper from the AUR:
+    yay -S mpvpaper            (check the PKGBUILD: source should be github.com/GhostNaN/mpvpaper)
+Then pick the video again. It pauses on purpose while game mode is on (Mod+G) or a
+window is fullscreen. Keep videos at 1080p: 4K files are larger and look the same here.
+
 ## Wallpaper picker does not open
 Mod+Shift+W needs the quickshell package (sudo pacman -S quickshell); without it you
 get the older rofi strip instead. Errors are logged in:

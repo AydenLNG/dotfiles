@@ -11,6 +11,6 @@ for dev in /sys/class/drm/card*/device; do
     if (( total > 0 )); then
         tip+="\\nVRAM $(( used / 1048576 )) / $(( total / 1048576 )) MiB"
     fi
-    printf '{"text": "  %s%%", "tooltip": "%s"}\n' "$busy" "$tip"
+    printf '{"text": "GPU %s%%", "tooltip": "%s"}\n' "$busy" "$tip"
     exit 0
 done
