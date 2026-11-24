@@ -8,7 +8,8 @@
 #      hold the login wallpaper and colours, so updating them never needs sudo.
 #   3. Backs up /etc/greetd/config.toml to /etc/greetd/config.toml.rice-backup,
 #      then writes a new one that starts ReGreet.
-#   4. Writes /etc/greetd/regreet.toml (background, font, power buttons).
+#   4. Writes /etc/greetd/regreet.toml (background, font, big clock, greeting,
+#      power buttons).
 #   5. Creates ReGreet's state and log folders (/var/lib/regreet, /var/log/regreet).
 #   6. Enables greetd so it starts at the next boot. It does NOT stop your
 #      current session.
@@ -96,6 +97,14 @@ theme_name = "Adwaita"
 [commands]
 reboot = [ "systemctl", "reboot" ]
 poweroff = [ "systemctl", "poweroff" ]
+
+[appearance]
+greeting_msg = "Welcome back"
+
+[widget.clock]
+format = "%H:%M"
+resolution = "1s"
+label_width = 300
 EOF
 
 # 5. state + log folders for the greeter user

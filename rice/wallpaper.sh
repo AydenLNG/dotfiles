@@ -113,7 +113,9 @@ update_login_wallpaper() {
     local img="$1"
     [[ -d "$LOGIN_DIR" && -w "$LOGIN_DIR" ]] || return 0
     is_video "$img" && img="$(video_frame "$img")"     # login screen gets a still frame
-    magick_cmd "${img}[0]" -resize '2560x1440^' -quality 90 "$LOGIN_DIR/wallpaper.jpg.tmp" 2>/dev/null \
+    # Softly blurred and slightly darkened, so the glass login card stands out.
+    magick_cmd "${img}[0]" -resize '1920x1080^' -blur 0x14 -modulate 85 -quality 90 \
+        "$LOGIN_DIR/wallpaper.jpg.tmp" 2>/dev/null \
         && mv "$LOGIN_DIR/wallpaper.jpg.tmp" "$LOGIN_DIR/wallpaper.jpg" \
         && chmod 644 "$LOGIN_DIR/wallpaper.jpg"
 }

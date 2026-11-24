@@ -2,4 +2,5 @@
 return {
     active   = "rgba(86aaecee)",
     inactive = "rgba(1f223388)",
+    background = "rgb(14151e)",
 }

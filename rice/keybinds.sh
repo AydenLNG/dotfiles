@@ -9,6 +9,7 @@ Mod + R                 app launcher (Apps / Windows / Run tabs)
 Mod + I                 settings menu
 Mod + N                 notification centre
 Mod + G                 game mode on / off (also pauses live wallpaper)
+Mod + F                 fullscreen the focused window on / off
 Alt + Tab               next workspace (1-5, wraps)
 Alt + Shift + Tab       previous workspace
 Mod + Ctrl + Alt + Del  restart into Windows once (asks password)

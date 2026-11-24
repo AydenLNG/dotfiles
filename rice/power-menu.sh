@@ -24,7 +24,7 @@ case "$choice" in
         ;;
     *logout)   hyprctl dispatch 'hl.dsp.exit()' ;;
     *suspend)  systemctl suspend ;;
-    *windows)  "$HOME/.config/rice/reboot-windows.sh" ;;
+    *windows)  "$HOME/.config/rice/reboot-windows.sh" --window ;;
     *reboot)   systemctl reboot ;;
     *shutdown) systemctl poweroff ;;
 esac

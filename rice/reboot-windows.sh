@@ -4,8 +4,10 @@
 # to Arch as normal, because grub-reboot only sets the NEXT boot.
 # Asks for your password every time (no permanent root rule is added).
 
-# Opened from a keybind: show this in a small terminal window.
-if [[ ! -t 0 ]]; then
+# Keybind and power menu pass --window: open this in a small terminal window.
+# (Checking for a terminal is not enough: Hyprland started from a login screen
+# or TTY hands its programs a terminal they cannot show, so it would wait unseen.)
+if [[ "${1:-}" == "--window" ]]; then
     exec setsid -f kitty --class rice-dialog --title "Reboot to Windows" bash "$(realpath "$0")"
 fi
 

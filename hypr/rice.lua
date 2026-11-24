@@ -34,6 +34,14 @@ end)
 ---- LOOK: gaps, borders, glass blur ----
 
 hl.config({
+    -- No Hyprland logo / default anime wallpaper while the real wallpaper loads:
+    -- just a plain colour that matches the theme.
+    misc = {
+        disable_hyprland_logo = true,
+        disable_splash_rendering = true,
+        force_default_wallpaper = 0,
+        background_color = colors.background or "rgb(14151e)",
+    },
     general = {
         gaps_in = 6,
         gaps_out = 18,
@@ -99,9 +107,10 @@ bind(mod .. " + slash",     hl.dsp.exec_cmd(rice .. "/keybinds.sh"))       -- ke
 bind(mod .. " + SHIFT + N", hl.dsp.exec_cmd(rice .. "/help.sh"))           -- troubleshooting notes
 bind(mod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"))       -- notification centre
 bind(mod .. " + G",         hl.dsp.exec_cmd(rice .. "/gamemode.sh"))       -- game mode on/off
+bind(mod .. " + F",         hl.dsp.window.fullscreen())                     -- fullscreen on/off
 bind("ALT + Tab",           hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh next"))  -- workspaces 1-5, wraps
 bind("ALT + SHIFT + Tab",   hl.dsp.exec_cmd(rice .. "/workspace-cycle.sh prev"))
-bind(mod .. " + CTRL + ALT + Delete", hl.dsp.exec_cmd(rice .. "/reboot-windows.sh"))  -- restart into Windows once
+bind(mod .. " + CTRL + ALT + Delete", hl.dsp.exec_cmd(rice .. "/reboot-windows.sh --window"))  -- restart into Windows once
 -- Mod+E (file manager) comes from your hyprland.lua; the installer points it at thunar.
 -- Mod+V is the default "toggle floating", so clipboard history uses Mod+Shift+V.
 bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd(rice .. "/clipboard.sh"))
