@@ -77,7 +77,8 @@ FILES=(
     rice/help.sh rice/gpu.sh rice/troubleshooting.md
     rice/launcher.sh rice/launcher.rasi rice/menu.rasi rice/clipboard.sh
     rice/gamemode.sh rice/gamemode-status.sh rice/fetch.sh
-    rice/media-status.sh rice/ping.sh rice/workspace-cycle.sh rice/reboot-windows.sh
+    rice/ping.sh rice/workspace-cycle.sh rice/reboot-windows.sh
+    rice/hub.sh rice/hub.qml rice/hub-data.py rice/idle.sh rice/battery.sh rice/osd.sh
     rice/login-setup.sh rice/login-undo.sh
     rice/wallpaper-picker.rasi rice/colors.rasi rice/wallpicker.qml
 )

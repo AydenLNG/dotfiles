@@ -55,6 +55,8 @@ slurp                   # select an area for screenshots
 wl-clipboard            # copy and paste from scripts
 cliphist                # clipboard history
 hyprlock                # lock screen
+hypridle                # auto lock / sleep (off by default) and lock before sleep
+brightnessctl           # laptop brightness keys and slider
 
 # ---- terminal widgets ----
 cava                    # audio visualizer, colours follow the wallpaper

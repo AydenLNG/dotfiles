@@ -130,10 +130,24 @@ Mod+Shift+W needs the quickshell package (sudo pacman -S quickshell); without it
 get the older rofi strip instead. Errors are logged in:
     ~/.cache/rice/wallpicker.log
 
-## Bar ping shows -- or is red
-"--" means no reply from the internet. Hover it: if the router ping is fine, the problem
-is the internet connection or the router's link to it; if the router ping is also slow or
-missing, it is the Wi-Fi between the PC and the router.
+## Ping in the control centre shows -- or is slow
+"--" means no reply from the internet. If the router answers fine (run ping on your
+router's address), the problem is the internet connection; if the router is also slow,
+it is the Wi-Fi between the PC and the router.
+
+## Control centre does not open (Mod+I / clicking the clock)
+It needs quickshell (sudo pacman -S quickshell); without it Mod+I opens the plain
+settings list instead. Errors are logged in:
+    ~/.cache/rice/hub.log
+
+## Auto lock or sleep does nothing
+Turn it on with the Auto lock tile in the control centre (it is off by default) and check
+hypridle is installed: pacman -Q hypridle. Game mode pauses the timers on purpose, and
+apps playing video can hold the screen awake.
+
+## Brightness keys or slider do nothing
+Needs brightnessctl (sudo pacman -S brightnessctl). Only laptop screens can be dimmed this
+way; desktop monitors use their own buttons, so the slider hides itself there.
 
 ## fastfetch picture overlaps the text
 The window is too narrow for a picture. The rice's fastfetch picks a smaller logo in

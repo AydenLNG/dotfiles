@@ -9,10 +9,18 @@ options=(
     $'\U000f0343  logout'
     $'  suspend'
     $'  reboot'
-    $'\uf17a  reboot to windows'
     $'\U000f0425  shutdown'
 )
-choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p "power" -theme "$HOME/.config/rice/menu.rasi" -theme-str 'window { width: 280px; } listview { lines: 6; }')" || exit 0
+# "reboot to windows" only on machines that still have Windows (its boot files
+# on the EFI partition), so it never shows on a Linux-only laptop.
+for efi in /boot/efi /boot /efi; do
+    if [[ -d "$efi/EFI/Microsoft/Boot" ]]; then
+        options=("${options[@]:0:4}" $'\uf17a  reboot to windows' "${options[@]:4}")
+        break
+    fi
+done
+
+choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p "power" -theme "$HOME/.config/rice/menu.rasi" -theme-str "window { width: 280px; } listview { lines: ${#options[@]}; }")" || exit 0
 
 case "$choice" in
     *lock)

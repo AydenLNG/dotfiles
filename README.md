@@ -14,8 +14,11 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 - **Notification centre:** swaync popups plus a panel with history, Do Not Disturb and media controls (bell in the bar)
 - **Game mode:** one key turns off blur, shadows and animations, silences notifications and pauses a live wallpaper
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
-- **Settings menu:** one menu for sound, Wi-Fi, Bluetooth, display, appearance, weather, lock and login screen, keybinds and system updates
-- **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock with a calendar on hover, and the song title with buttons on hover. Right: volume with a slider on hover, network, internet ping (router ping on hover), a chart icon whose drawer holds CPU, GPU, RAM, weather and the tray, notifications, wallpaper and power
+- **Control centre:** click the clock (or `Mod + I`) for a glass panel under the bar: month calendar, now playing, weather, Wi-Fi / Bluetooth / Silence / Auto lock toggles, volume and brightness sliders, battery, auto lock and sleep timers, CPU / GPU / RAM and ping. It only runs while open
+- **Settings list:** the full tools (sound, network, Bluetooth, display, appearance, weather, login screen, keybinds, system updates) from the control centre's Settings button or `Mod + Shift + I`
+- **Auto lock and sleep:** off by default; turn it on and set the timers in the control centre. The screen always locks before the computer sleeps, and game mode pauses the timers
+- **Laptops:** battery in the bar (yellow at 20 %, red at 10 %, low-battery notifications), brightness keys and an on-screen level for volume and brightness. All of it hides itself on a desktop
+- **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock, Wi-Fi, Bluetooth and volume; click any of them for the control centre. Right: tray, notifications, wallpaper, battery (laptops) and power
 - **Weather:** for a place you type in `~/.config/rice/weather.conf`; your location is never detected automatically
 - **Screenshots and clipboard history,** lock screen (hyprlock), cava visualizer
 - **Login screen (optional):** greetd + ReGreet with your current wallpaper and colours, set up and removed with one script each
@@ -26,7 +29,9 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 | Keys | Action |
 |---|---|
 | `Mod + R` | App launcher (Apps / Windows / Run) |
-| `Mod + I` | Settings menu |
+| `Mod + I` | Control centre (same as clicking the clock) |
+| `Mod + Shift + I` | Full settings list |
+| `Mod + F` | Fullscreen on / off |
 | `Mod + N` | Notification centre |
 | `Mod + G` | Game mode on / off |
 | `Mod + Ctrl + Alt + Delete` | Restart straight into Windows once (asks for your password; the next restart is Arch again) |
@@ -53,7 +58,7 @@ settings menu under Keybinds.
 | File manager | thunar, gvfs, tumbler, ffmpegthumbnailer, file-roller, thunar-archive-plugin |
 | Settings | pavucontrol, network-manager-applet, blueman, nwg-look, nwg-displays |
 | Everyday | firefox, imv, mpv |
-| Utilities | grim, slurp, wl-clipboard, cliphist, hyprlock |
+| Utilities | grim, slurp, wl-clipboard, cliphist, hyprlock, hypridle, brightnessctl |
 | Terminal widgets | cava, fastfetch, btop, cmatrix |
 
 Full list with notes: `packages.txt`.
@@ -98,8 +103,11 @@ kitty/                  terminal font, padding, colours; auto_font.py scales tex
 fastfetch/              fastfetch modules and look
 rice/fetch.sh           "fastfetch": logo and number of lines chosen to fit the window (random mix of ~/Pictures/Fetch pictures and text logos when there is room)
 rice/fetch.conf         picture chance and which text logos (never overwritten on reinstall)
-rice/ping.sh            bar ping: internet (1.1.1.1) and router
-rice/media-status.sh    play / pause button in the media drawer
+rice/ping.sh            ping for the control centre: internet (1.1.1.1) and router
+rice/hub.sh             Mod + I control centre (rice/hub.qml, data from rice/hub-data.py)
+rice/idle.sh            auto lock / sleep settings (writes hypr/hypridle.conf)
+rice/battery.sh         laptop battery for the bar + low-battery notifications
+rice/osd.sh             on-screen volume / brightness level
 rice/workspace-cycle.sh Alt + Tab workspace cycling
 rice/reboot-windows.sh  restart into Windows once (grub-reboot); one-time GRUB setup with your OK
 swaync/config.json      notification centre layout
@@ -114,13 +122,13 @@ rice/launcher.sh        Mod + R app launcher (rice/launcher.rasi)
 rice/menu.rasi          shared look of the small menus
 rice/clipboard.sh       Mod + Shift + V clipboard history
 rice/gamemode.sh        Mod + G game mode (rice/gamemode-status.sh for the bar)
-rice/settings-menu.sh   Mod + I menu
+rice/settings-menu.sh   Mod + Shift + I full settings list
 rice/keybinds.sh        keybind cheat sheet
 rice/screenshot.sh      area / full screenshots
 rice/help.sh            troubleshooting viewer; notes in rice/troubleshooting.md
-rice/gpu.sh             AMD GPU usage for the bar
-rice/power-menu.sh      lock / logout / suspend / reboot / shutdown
-rice/weather.sh         weather for the bar (uses wttr.in)
+rice/gpu.sh             AMD GPU usage
+rice/power-menu.sh      lock / logout / suspend / reboot / shutdown (reboot to Windows only where Windows exists)
+rice/weather.sh         weather (uses wttr.in)
 rice/weather.conf       your weather location (never overwritten on reinstall)
 rice/login-setup.sh     optional login screen (system change, uses sudo)
 rice/login-undo.sh      back to the text login

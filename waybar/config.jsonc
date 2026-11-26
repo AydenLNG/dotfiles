@@ -1,7 +1,7 @@
 // ~/.config/waybar/config.jsonc
-// Glass "islands" bar: three floating pills (workspaces | clock + media | system).
-// Drawers keep it tidy: hover the music title for controls, the volume icon for a
-// slider, and the chart icon for CPU / GPU / RAM / weather / tray.
+// Glass "islands" bar: workspaces | clock + status (the control centre) | tray and buttons.
+// Click the clock or the Wi-Fi / Bluetooth / volume icons to open the control
+// centre (also Super+I): calendar, toggles, sliders, timers, CPU / GPU / RAM, ping.
 // Colours come from colors.css (synced to the wallpaper).
 // Icons are Nerd Font glyphs written as \uXXXX escapes.
 {
@@ -24,32 +24,11 @@
     },
     "group/island-center": {
         "orientation": "horizontal",
-        "modules": ["clock", "group/media"]
+        "modules": ["clock", "network", "bluetooth", "pulseaudio"]
     },
     "group/island-right": {
         "orientation": "horizontal",
-        "modules": ["group/volume", "network", "custom/ping", "group/system",
-                    "custom/notification", "custom/wallpaper", "custom/power"]
-    },
-
-    // ---------------------------------------------------------------- drawers
-    // Media: only the title shows; hover it for previous / play-pause / next.
-    "group/media": {
-        "orientation": "horizontal",
-        "drawer": { "transition-duration": 350, "children-class": "media-btn", "transition-left-to-right": true },
-        "modules": ["mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
-    },
-    // Volume: hover the volume for a slider.
-    "group/volume": {
-        "orientation": "horizontal",
-        "drawer": { "transition-duration": 350, "children-class": "vol-slider", "transition-left-to-right": true },
-        "modules": ["pulseaudio", "pulseaudio/slider"]
-    },
-    // System: hover (or click) the chart icon for CPU, GPU, RAM, weather and tray icons.
-    "group/system": {
-        "orientation": "horizontal",
-        "drawer": { "transition-duration": 400, "children-class": "sys-item", "transition-left-to-right": false },
-        "modules": ["custom/system", "cpu", "custom/gpu", "memory", "custom/weather", "tray"]
+        "modules": ["tray", "custom/notification", "custom/wallpaper", "custom/battery", "custom/power"]
     },
 
     // ---------------------------------------------------------------- modules
@@ -67,111 +46,52 @@
         "on-click": "$HOME/.config/rice/gamemode.sh"
     },
 
-    // Hover for a month calendar; scroll to change month; right-click for the year.
+    // Click: control centre (calendar inside). Same for the status icons next to it.
     "clock": {
-        "format": "\uf017  {:%a %d %b  %H:%M}",
-        "tooltip-format": "<tt>{calendar}</tt>",
-        "calendar": {
-            "mode": "month",
-            "mode-mon-col": 3,
-            "on-scroll": 1,
-            "format": {
-                "months": "<b>{}</b>",
-                "today": "<b><u>{}</u></b>"
-            }
-        },
-        "actions": {
-            "on-click-right": "mode",
-            "on-scroll-up": "shift_up",
-            "on-scroll-down": "shift_down"
-        }
+        "format": "{:%H:%M  %a %d %b}",
+        "tooltip": false,
+        "on-click": "$HOME/.config/rice/hub.sh"
     },
 
-    // Song / video playing in any app (Firefox, Spotify...). Title only;
-    // click to play / pause, scroll for next / previous.
-    "mpris": {
-        "format": "\uf001  {dynamic}",
-        "format-paused": "\uf001  <i>{dynamic}</i>",
-        "dynamic-order": ["title", "artist"],
-        "dynamic-len": 36,
-        "on-click": "playerctl play-pause",
-        "on-scroll-up": "playerctl next",
-        "on-scroll-down": "playerctl previous"
-    },
-    "custom/media-prev": {
-        "format": "\uf048",
-        "tooltip": false,
-        "on-click": "playerctl previous"
-    },
-    // Button style: shows pause while playing, play while paused.
-    "custom/media-play": {
-        "exec": "$HOME/.config/rice/media-status.sh",
-        "return-type": "json",
-        "on-click": "playerctl play-pause"
-    },
-    "custom/media-next": {
-        "format": "\uf051",
-        "tooltip": false,
-        "on-click": "playerctl next"
-    },
-
+    // Volume: click for the control centre, scroll to change, right-click to mute.
     "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "format-muted": "\uf026  muted",
+        "format": "{icon} {volume}%",
+        "format-muted": "\uf026",
         "format-icons": { "default": ["\uf026", "\uf027", "\uf028"] },
-        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-        "on-click-right": "pavucontrol",
+        "tooltip-format": "Volume {volume}% ({desc})",
+        "on-click": "$HOME/.config/rice/hub.sh",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
-    "pulseaudio/slider": {
-        "min": 0,
-        "max": 100,
-        "orientation": "horizontal"
-    },
 
-    // Icon only; hover for the network name and signal.
+    // Icon only; hover for the network name and signal. Click: control centre.
+    // Right-click: pick and join a Wi-Fi network.
     "network": {
         "format-wifi": "\uf1eb",
         "format-ethernet": "\uf0e8",
         "format-disconnected": "\uf127",
-        "tooltip-format-wifi": "{essid}  {signalStrength}% signal  {frequency} GHz",
-        "tooltip-format-ethernet": "Wired ({ifname})",
+        "tooltip-format-wifi": "{essid}  {signalStrength}% signal",
+        "tooltip-format-ethernet": "Wired",
         "tooltip-format-disconnected": "Offline",
-        "on-click": "nm-connection-editor"
+        "on-click": "$HOME/.config/rice/hub.sh",
+        "on-click-right": "setsid -f kitty --class rice-dialog --title 'Wi-Fi' nmtui connect"
     },
 
-    // Internet ping (to 1.1.1.1); hover also shows the router ping, which tells
-    // Wi-Fi problems apart from internet problems.
-    "custom/ping": {
-        "exec": "$HOME/.config/rice/ping.sh",
-        "return-type": "json",
-        "interval": 10
+    // Hidden when the computer has no Bluetooth adapter. Dim when off.
+    "bluetooth": {
+        "format": "\uf293",
+        "format-off": "\uf293",
+        "format-disabled": "",
+        "format-no-controller": "",
+        "format-connected": "\uf293",
+        "tooltip-format": "Bluetooth {status}",
+        "tooltip-format-connected": "Bluetooth: {device_alias}",
+        "tooltip-format-off": "Bluetooth off",
+        "on-click": "$HOME/.config/rice/hub.sh",
+        "on-click-right": "blueman-manager"
     },
 
-    "custom/system": {
-        "format": "\uf080",
-        "tooltip-format": "System: CPU, GPU, RAM, weather, tray"
-    },
-    "cpu": {
-        "format": "CPU {usage}%",
-        "interval": 3
-    },
-    "custom/gpu": {
-        "exec": "$HOME/.config/rice/gpu.sh",
-        "return-type": "json",
-        "interval": 3
-    },
-    "memory": {
-        "format": "RAM {percentage}%",
-        "tooltip-format": "Memory: {used:0.1f} / {total:0.1f} GiB used",
-        "interval": 5
-    },
-    "custom/weather": {
-        "exec": "$HOME/.config/rice/weather.sh",
-        "return-type": "json",
-        "interval": 1800
-    },
     "tray": {
         "spacing": 8
     },
@@ -201,6 +121,14 @@
         "tooltip": false,
         "on-click": "$HOME/.config/rice/wallpaper.sh pick",
         "on-click-right": "$HOME/.config/rice/wallpaper.sh random"
+    },
+
+    // Laptops only (hidden on a desktop). Yellow at 20 %, red and blinking at 10 %.
+    "custom/battery": {
+        "exec": "$HOME/.config/rice/battery.sh",
+        "return-type": "json",
+        "interval": 30,
+        "on-click": "$HOME/.config/rice/hub.sh"
     },
 
     "custom/power": {
