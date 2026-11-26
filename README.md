@@ -14,11 +14,11 @@ settings apps, lock screen, login screen and window borders all recolour to matc
 - **Notification centre:** swaync popups plus a panel with history, Do Not Disturb and media controls (bell in the bar)
 - **Game mode:** one key turns off blur, shadows and animations, silences notifications and pauses a live wallpaper
 - **Colour sync:** `theme-sync.py` reads the wallpaper's colours and recolours every app; open terminals and GTK apps update instantly
-- **Control centre:** click the clock (or `Mod + I`) for a glass panel under the bar: month calendar, now playing, weather, Wi-Fi / Bluetooth / Silence / Auto lock toggles, volume and brightness sliders, battery, auto lock and sleep timers, CPU / GPU / RAM and ping. It only runs while open
+- **Control centre:** click the clock (or `Mod + I`) for a glass panel under the bar: month calendar, now playing, weather, Wi-Fi / Bluetooth / Silence / Auto lock toggles, volume and brightness sliders, battery, auto lock and sleep timers, CPU / GPU / RAM and a Wallpaper button. It only runs while open
 - **Settings list:** the full tools (sound, network, Bluetooth, display, appearance, weather, login screen, keybinds, system updates) from the control centre's Settings button or `Mod + Shift + I`
 - **Auto lock and sleep:** off by default; turn it on and set the timers in the control centre. The screen always locks before the computer sleeps, and game mode pauses the timers
 - **Laptops:** battery in the bar (yellow at 20 %, red at 10 %, low-battery notifications), brightness keys and an on-screen level for volume and brightness. All of it hides itself on a desktop
-- **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock, Wi-Fi, Bluetooth and volume; click any of them for the control centre. Right: tray, notifications, wallpaper, battery (laptops) and power
+- **Bar:** three glass islands. Left: workspaces (and a game mode badge). Centre: clock, Wi-Fi, Bluetooth and volume; click any of them for the control centre. Right: tray, notifications, internet ping (router ping on hover), battery (laptops) and power
 - **Weather:** for a place you type in `~/.config/rice/weather.conf`; your location is never detected automatically
 - **Screenshots and clipboard history,** lock screen (hyprlock), cava visualizer
 - **Login screen (optional):** greetd + ReGreet with your current wallpaper and colours, set up and removed with one script each
@@ -103,7 +103,7 @@ kitty/                  terminal font, padding, colours; auto_font.py scales tex
 fastfetch/              fastfetch modules and look
 rice/fetch.sh           "fastfetch": logo and number of lines chosen to fit the window (random mix of ~/Pictures/Fetch pictures and text logos when there is room)
 rice/fetch.conf         picture chance and which text logos (never overwritten on reinstall)
-rice/ping.sh            ping for the control centre: internet (1.1.1.1) and router
+rice/ping.sh            bar ping: internet (1.1.1.1) and router
 rice/hub.sh             Mod + I control centre (rice/hub.qml, data from rice/hub-data.py)
 rice/idle.sh            auto lock / sleep settings (writes hypr/hypridle.conf)
 rice/battery.sh         laptop battery for the bar + low-battery notifications

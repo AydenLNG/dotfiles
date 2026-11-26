@@ -1,5 +1,5 @@
 // ~/.config/waybar/config.jsonc
-// Glass "islands" bar: workspaces | clock + status (the control centre) | tray and buttons.
+// Glass "islands" bar: workspaces | clock + status (the control centre) | tray, bell, ping, battery, power.
 // Click the clock or the Wi-Fi / Bluetooth / volume icons to open the control
 // centre (also Super+I): calendar, toggles, sliders, timers, CPU / GPU / RAM, ping.
 // Colours come from colors.css (synced to the wallpaper).
@@ -24,11 +24,11 @@
     },
     "group/island-center": {
         "orientation": "horizontal",
-        "modules": ["clock", "network", "bluetooth", "pulseaudio"]
+        "modules": ["clock", "network", "bluetooth", "pulseaudio", "custom/hub-arrow"]
     },
     "group/island-right": {
         "orientation": "horizontal",
-        "modules": ["tray", "custom/notification", "custom/wallpaper", "custom/battery", "custom/power"]
+        "modules": ["tray", "custom/notification", "custom/ping", "custom/battery", "custom/power"]
     },
 
     // ---------------------------------------------------------------- modules
@@ -116,11 +116,19 @@
         "on-click-right": "swaync-client -d -sw"
     },
 
-    "custom/wallpaper": {
-        "format": "",
+    // Internet ping (to 1.1.1.1) every 10 s; hover also shows the router ping,
+    // which tells Wi-Fi problems apart from internet problems.
+    "custom/ping": {
+        "exec": "$HOME/.config/rice/ping.sh",
+        "return-type": "json",
+        "interval": 10
+    },
+
+    // Small arrow at the end of the centre island: shows it opens a dropdown.
+    "custom/hub-arrow": {
+        "format": "\uf107",
         "tooltip": false,
-        "on-click": "$HOME/.config/rice/wallpaper.sh pick",
-        "on-click-right": "$HOME/.config/rice/wallpaper.sh random"
+        "on-click": "$HOME/.config/rice/hub.sh"
     },
 
     // Laptops only (hidden on a desktop). Yellow at 20 %, red and blinking at 10 %.

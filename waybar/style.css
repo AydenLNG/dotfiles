@@ -40,8 +40,8 @@ tooltip label {
 }
 
 /* every module inside an island: no background of its own */
-#workspaces, #clock, #network, #bluetooth, #pulseaudio, #tray,
-#custom-notification, #custom-wallpaper, #custom-battery, #custom-power {
+#workspaces, #clock, #network, #bluetooth, #pulseaudio, #custom-hub-arrow, #tray,
+#custom-notification, #custom-ping, #custom-battery, #custom-power {
     padding: 0 9px;
     background: transparent;
 }
@@ -84,22 +84,27 @@ tooltip label {
     font-weight: bold;
 }
 
-/* ---- centre: clock + status icons (click any of them for the control centre) ---- */
+/* ---- centre: clock + status icons ----
+   One button: any part of the island opens the control centre, so the pieces sit
+   close together with no separate hover boxes, and the whole island lights up. */
 
-#clock                { color: @fg; font-weight: bold; padding-right: 12px; }
-#network              { color: @fg; padding: 0 7px; }
+#clock                { color: @fg; font-weight: bold; padding: 0 10px 0 9px; }
+#network, #bluetooth, #pulseaudio { padding: 0 5px; }
+#network              { color: @fg; }
 #network.disconnected { color: @muted; }
-#bluetooth            { color: @fg; padding: 0 7px; }
+#bluetooth            { color: @fg; }
 #bluetooth.off,
 #bluetooth.disabled   { color: @muted; }
 #bluetooth.connected  { color: @accent; }
-#pulseaudio           { color: @fg; padding: 0 10px 0 7px; }
+#pulseaudio           { color: @fg; }
 #pulseaudio.muted     { color: @muted; }
+#custom-hub-arrow     { color: @muted; padding: 0 9px 0 4px; }
 
-#clock:hover, #network:hover, #bluetooth:hover, #pulseaudio:hover {
-    background: alpha(@accent, 0.18);
-    border-radius: 10px;
+#island-center:hover {
+    background: alpha(@accent, 0.16);
+    border-color: alpha(@accent, 0.45);
 }
+#island-center:hover #custom-hub-arrow { color: @accent; }
 
 /* ---- right: tray and buttons ---- */
 
@@ -108,7 +113,9 @@ tooltip label {
 #custom-notification  { color: @fg; }
 #custom-notification.dnd-none,
 #custom-notification.dnd-notification { color: @muted; }
-#custom-wallpaper     { color: @accent2; }
+#custom-ping          { color: @green; min-width: 62px; }  /* fixed width so the bar does not jitter */
+#custom-ping.ok       { color: @yellow; }
+#custom-ping.bad      { color: @urgent; }
 #custom-power         { color: @urgent; }
 
 /* battery (laptops only) */
@@ -123,7 +130,6 @@ tooltip label {
     to { color: alpha(@urgent, 0.35); }
 }
 
-#custom-wallpaper:hover,
 #custom-power:hover,
 #custom-battery:hover,
 #custom-notification:hover {

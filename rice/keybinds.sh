@@ -28,7 +28,7 @@ Bar: volume             scroll to change, right click mute
 Bar: Wi-Fi              hover for name, right click pick a network
 Bar: Bluetooth          hover for device, right click Bluetooth manager
 Bar: battery (laptop)   hover for time left, click control centre
-Bar: wallpaper icon     left click picker, right click random
+Bar: ping               hover for the router ping
 Bar: bell               click notification centre, right click Do Not Disturb
 Volume / brightness keys show an on-screen level
 --- from your own hyprland.lua ---

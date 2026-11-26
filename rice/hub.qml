@@ -5,7 +5,7 @@
 //
 //   Left:  date, month calendar (arrows change month), now playing, weather
 //   Right: Wi-Fi / Bluetooth / Silence / Auto lock tiles, volume and brightness,
-//          battery (laptops), auto lock + sleep timers, CPU / GPU / RAM, ping,
+//          battery (laptops), auto lock + sleep timers, CPU / GPU / RAM,
 //          and buttons for the wallpaper picker, full settings and power menu.
 //
 // Values come from hub-data.py every 2 s; changes run the normal tools
@@ -23,7 +23,6 @@ ShellRoot {
     readonly property string dir: Quickshell.env("RICE_DIR") || (Quickshell.env("HOME") + "/.config/rice")
     readonly property var pal: JSON.parse(Quickshell.env("RICE_PALETTE") || "{}")
     property var d: JSON.parse(Quickshell.env("RICE_HUB_DATA") || "{}")
-    property string ping: "..."
     property int calOffset: 0                      // months away from the current one
 
     // ---- sizes (tweak here) ----
@@ -31,6 +30,7 @@ ShellRoot {
     readonly property int leftW: 250
     readonly property int rightW: 330
     readonly property string font: "JetBrainsMono Nerd Font"
+    readonly property real glass: 0.5             // panel opacity: lower = more see-through (bar islands use 0.55)
 
     readonly property var lockSteps: [5, 10, 15, 30, 60]
     readonly property var sleepSteps: [0, 15, 30, 60, 120]
@@ -70,17 +70,6 @@ ShellRoot {
     }
     Timer { interval: 2000; running: true; repeat: true; onTriggered: if (!dataProc.running) dataProc.running = true }
     Timer { id: refreshSoon; interval: 450; onTriggered: if (!dataProc.running) dataProc.running = true }
-
-    Process {
-        id: pingProc
-        command: ["bash", root.dir + "/ping.sh"]
-        stdout: SplitParser {
-            onRead: data => {
-                try { const t = JSON.parse(data).text.replace(/^\S+\s+/, ""); root.ping = t } catch (e) {}
-            }
-        }
-    }
-    Timer { interval: 10000; running: true; repeat: true; triggeredOnStart: true; onTriggered: if (!pingProc.running) pingProc.running = true }
 
     // ---- small building blocks ----
     component Label: Text {
@@ -276,9 +265,9 @@ ShellRoot {
             width: body.width + 32
             height: body.height + 32
             radius: 18
-            color: root.a(root.cBg, 0.82)
+            color: root.a(root.cBg, root.glass)
             border.width: 1
-            border.color: root.a(root.cAccent, 0.3)
+            border.color: root.a(root.cAccent, 0.28)
             opacity: 0
             Component.onCompleted: opacity = 1
             Behavior on opacity { NumberAnimation { duration: 160 } }
@@ -484,13 +473,6 @@ ShellRoot {
                         Stat { name: "CPU"; value: root.g("cpu", -1); count: parent.n }
                         Stat { name: "GPU"; value: root.g("gpu", -1); count: parent.n; visible: value >= 0 }
                         Stat { name: "RAM"; value: root.g("ram", -1); count: parent.n }
-                    }
-
-                    Row {
-                        spacing: 8; height: 22
-                        Label { text: ""; width: 24; color: root.cMuted; anchors.verticalCenter: parent.verticalCenter }
-                        Label { text: "Internet"; width: root.rightW - 24 - 100 - 16; anchors.verticalCenter: parent.verticalCenter }
-                        Label { text: root.ping; width: 100; horizontalAlignment: Text.AlignRight; color: root.cMuted; anchors.verticalCenter: parent.verticalCenter }
                     }
 
                     Row {

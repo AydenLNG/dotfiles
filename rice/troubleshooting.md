@@ -130,10 +130,10 @@ Mod+Shift+W needs the quickshell package (sudo pacman -S quickshell); without it
 get the older rofi strip instead. Errors are logged in:
     ~/.cache/rice/wallpicker.log
 
-## Ping in the control centre shows -- or is slow
-"--" means no reply from the internet. If the router answers fine (run ping on your
-router's address), the problem is the internet connection; if the router is also slow,
-it is the Wi-Fi between the PC and the router.
+## Bar ping shows -- or is red
+"--" means no reply from the internet. Hover it: if the router ping is fine, the problem
+is the internet connection or the router's link to it; if the router ping is also slow or
+missing, it is the Wi-Fi between the PC and the router.
 
 ## Control centre does not open (Mod+I / clicking the clock)
 It needs quickshell (sudo pacman -S quickshell); without it Mod+I opens the plain
